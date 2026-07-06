@@ -1,0 +1,196 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); color: var(--color-text-primary); }
+.section { margin-bottom: 2rem; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.metric-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.metric-value { font-size: 22px; font-weight: 500; }
+.metric-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.chart-wrap { position: relative; width: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px; }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 480px) { .two-col { grid-template-columns: 1fr; } }
+.note { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; font-style: italic; }
+</style>
+
+<div style="padding: 1rem 0;">
+<h2 class="sr-only">DMR list comparison report: XLSX vs ChIPseeker CSV</h2>
+
+<div class="section">
+  <div class="section-title">File overview</div>
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-label">XLSX (DMR_total_list)</div>
+      <div class="metric-value" style="color:#185FA5">813</div>
+      <div class="metric-sub">DMRs · 705 genes</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">CSV (ChIPseeker annotated)</div>
+      <div class="metric-value" style="color:#3B6D11">921</div>
+      <div class="metric-sub">DMRs · 825 genes</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Shared DMRs</div>
+      <div class="metric-value" style="color:#854F0B">266</div>
+      <div class="metric-sub">33% of XLSX · 29% of CSV</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Shared genes</div>
+      <div class="metric-value" style="color:#854F0B">299</div>
+      <div class="metric-sub">42% of XLSX · 36% of CSV</div>
+    </div>
+  </div>
+  <p class="note">Matching performed on areaStat (rounded to 3 d.p.). Coordinates differ by +1 (CSV uses 1-based, XLSX uses 0-based genomic coordinates).</p>
+</div>
+
+<div class="section">
+  <div class="section-title">Venn: DMR loci</div>
+  <div style="display:flex; align-items:center; justify-content:center; gap:0;">
+    <svg width="400" height="160" viewBox="0 0 400 160" role="img" aria-label="Venn diagram of DMR overlap. XLSX only: 535, shared: 266, CSV only: 642">
+      <ellipse cx="155" cy="80" rx="130" ry="65" fill="#185FA5" fill-opacity="0.18" stroke="#185FA5" stroke-width="1.5"/>
+      <ellipse cx="245" cy="80" rx="130" ry="65" fill="#3B6D11" fill-opacity="0.18" stroke="#3B6D11" stroke-width="1.5"/>
+      <text x="90" y="72" text-anchor="middle" font-size="22" font-weight="500" fill="#185FA5">535</text>
+      <text x="90" y="92" text-anchor="middle" font-size="11" fill="#185FA5">XLSX only</text>
+      <text x="310" y="72" text-anchor="middle" font-size="22" font-weight="500" fill="#3B6D11">642</text>
+      <text x="310" y="92" text-anchor="middle" font-size="11" fill="#3B6D11">CSV only</text>
+      <text x="200" y="72" text-anchor="middle" font-size="22" font-weight="500" fill="#854F0B">266</text>
+      <text x="200" y="92" text-anchor="middle" font-size="11" fill="#854F0B">shared</text>
+    </svg>
+  </div>
+</div>
+
+<div class="two-col section">
+  <div>
+    <div class="section-title">Methylation direction</div>
+    <div class="legend">
+      <span><span class="swatch" style="background:#E24B4A"></span>Hyper</span>
+      <span><span class="swatch" style="background:#185FA5"></span>Hypo</span>
+    </div>
+    <div class="chart-wrap" style="height:200px"><canvas id="dirChart" role="img" aria-label="Bar chart of hyper vs hypo methylation in shared vs unique DMR sets"></canvas></div>
+  </div>
+  <div>
+    <div class="section-title">areaStat distribution</div>
+    <div class="legend">
+      <span><span class="swatch" style="background:#185FA5"></span>XLSX overlap</span>
+      <span><span class="swatch" style="background:#73726c"></span>XLSX only</span>
+      <span><span class="swatch" style="background:#3B6D11"></span>CSV overlap</span>
+      <span><span class="swatch" style="background:#9FE1CB"></span>CSV only</span>
+    </div>
+    <div class="chart-wrap" style="height:200px"><canvas id="asChart" role="img" aria-label="Bar chart comparing areaStat means across DMR subsets"></canvas></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Genomic annotation — shared vs unique</div>
+  <div class="two-col">
+    <div>
+      <p style="font-size:12px; color:var(--color-text-secondary); margin-bottom:8px">XLSX annotation</p>
+      <div class="chart-wrap" style="height:260px"><canvas id="annXlsx" role="img" aria-label="Stacked bar chart of XLSX DMR genomic annotation, shared vs unique"></canvas></div>
+    </div>
+    <div>
+      <p style="font-size:12px; color:var(--color-text-secondary); margin-bottom:8px">CSV annotation (ChIPseeker)</p>
+      <div class="chart-wrap" style="height:260px"><canvas id="annCsv" role="img" aria-label="Stacked bar chart of CSV DMR genomic annotation, shared vs unique"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">DMRs per chromosome — all vs shared</div>
+  <div class="legend">
+    <span><span class="swatch" style="background:#B5D4F4"></span>XLSX total</span>
+    <span><span class="swatch" style="background:#185FA5"></span>XLSX shared</span>
+    <span><span class="swatch" style="background:#C0DD97"></span>CSV total</span>
+    <span><span class="swatch" style="background:#3B6D11"></span>CSV shared</span>
+  </div>
+  <div class="chart-wrap" style="height:320px"><canvas id="chrChart" role="img" aria-label="Grouped bar chart of DMR counts per chromosome for both files"></canvas></div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const defaults = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+
+new Chart(document.getElementById('dirChart'), {
+  type: 'bar',
+  data: {
+    labels: ['XLSX overlap', 'XLSX only', 'CSV overlap', 'CSV only'],
+    datasets: [
+      { label: 'Hyper', data: [237, 401, 236, 449], backgroundColor: '#E24B4A' },
+      { label: 'Hypo',  data: [36, 139, 36, 200],  backgroundColor: '#185FA5' }
+    ]
+  },
+  options: { ...defaults, scales: { x: { stacked: true }, y: { stacked: true, ticks: { precision: 0 } } } }
+});
+
+new Chart(document.getElementById('asChart'), {
+  type: 'bar',
+  data: {
+    labels: ['XLSX\noverlap', 'XLSX\nonly', 'CSV\noverlap', 'CSV\nonly'],
+    datasets: [{
+      label: 'Mean areaStat',
+      data: [26.7, 25.7, 26.6, 21.0],
+      backgroundColor: ['#185FA5', '#73726c', '#3B6D11', '#9FE1CB']
+    }]
+  },
+  options: { ...defaults, scales: { y: { beginAtZero: true, title: { display: true, text: 'Mean areaStat', font: { size: 11 } } } } }
+});
+
+const annLabels = ['Intron/intron', 'Intergenic', 'Exon', 'Promoter/TSS', "3' UTR", 'Other'];
+new Chart(document.getElementById('annXlsx'), {
+  type: 'bar',
+  data: {
+    labels: ['Shared', 'XLSX only'],
+    datasets: [
+      { label: 'Intron', data: [125, 230], backgroundColor: '#185FA5' },
+      { label: 'Intergenic', data: [126, 267], backgroundColor: '#73726c' },
+      { label: 'Exon', data: [10, 14], backgroundColor: '#3B6D11' },
+      { label: 'Promoter-TSS', data: [2, 5], backgroundColor: '#EF9F27' },
+      { label: "3' UTR", data: [4, 9], backgroundColor: '#E24B4A' },
+      { label: 'Other', data: [5, 10], backgroundColor: '#B5D4F4' }
+    ]
+  },
+  options: { ...defaults, scales: { x: { stacked: true }, y: { stacked: true, ticks: { precision: 0 } } } }
+});
+
+new Chart(document.getElementById('annCsv'), {
+  type: 'bar',
+  data: {
+    labels: ['Shared', 'CSV only'],
+    datasets: [
+      { label: 'Intron', data: [153, 314], backgroundColor: '#185FA5' },
+      { label: 'Distal intergenic', data: [53, 149], backgroundColor: '#73726c' },
+      { label: 'Exon', data: [36, 80], backgroundColor: '#3B6D11' },
+      { label: 'Promoter', data: [21, 74], backgroundColor: '#EF9F27' },
+      { label: "3' UTR", data: [7, 26], backgroundColor: '#E24B4A' },
+      { label: "5' UTR", data: [2, 6], backgroundColor: '#B5D4F4' }
+    ]
+  },
+  options: { ...defaults, scales: { x: { stacked: true }, y: { stacked: true, ticks: { precision: 0 } } } }
+});
+
+const chrs = ['chr1','chr2','chr3','chr4','chr5','chr6','chr7','chr8','chr9','chr10','chr11','chr12','chr13','chr14','chr15','chr16','chr17','chr18','chr19','chr20','chr21','chr22','chrX'];
+const xlsxTot =  [64,67,56,37,56,64,37,52,40,43,33,33,35,26,16,36,25,24,12,17,17,9,14];
+const xlsxOvlp = [17,26,16,15,18,28,11,18,11,10,13,14,10,7,5,11,11,6,9,6,6,2,3];
+const csvTot =   [71,90,66,45,66,67,41,58,39,47,38,37,35,31,22,37,31,25,13,19,20,9,14];
+const csvOvlp =  [18,27,17,14,17,27,11,19,11,11,11,14,10,7,4,10,11,6,9,6,6,2,4];
+
+new Chart(document.getElementById('chrChart'), {
+  type: 'bar',
+  data: {
+    labels: chrs,
+    datasets: [
+      { label: 'XLSX total',  data: xlsxTot,  backgroundColor: '#B5D4F4' },
+      { label: 'XLSX shared', data: xlsxOvlp, backgroundColor: '#185FA5' },
+      { label: 'CSV total',   data: csvTot,   backgroundColor: '#C0DD97' },
+      { label: 'CSV shared',  data: csvOvlp,  backgroundColor: '#3B6D11' }
+    ]
+  },
+  options: { ...defaults, scales: { x: { ticks: { font: { size: 10 }, maxRotation: 45, autoSkip: false } }, y: { ticks: { precision: 0 } } } }
+});
+</script>
