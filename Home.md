@@ -1,151 +1,265 @@
 ---
-cssclass: dashboard
-tags:
-  - MOC
-  - dashboard
----
-# 🏠 Academy
-
-<span class="dash-date">`= dateformat(date(today), "EEEE, MMMM d, yyyy")`</span>
-
+cssclasses:
+  - dashboard-home
 ---
 
-## ⚡ Quick Nav
+<div class="dash-hero">
+<div class="dash-ribbon"></div>
 
-> [!grid-4]
->
-> > [!example]+ 📝 Thesis
-> > [[Thesis/MOC|Thesis / Mimosa →]]
-> > Validation, Mimosa runs, chapters
->
-> > [!example]+ 📦 epykit
-> > [[Epykit/MOC|epykit →]]
-> > Benchmarks, FDR, releases
->
-> > [!example]+ 📚 References
-> > [[References/MOC|References →]]
-> > WGBS methods, callers, literature
->
-> > [!example]+ 📋 Tasks
-> > [[TODO|Active TODO →]]
-> > Cross-project tasks
+```dataviewjs
+const now = new Date();
+const h = now.getHours();
+const greeting = h < 5 ? "Still up" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : h < 22 ? "Good evening" : "Still up";
+const dateStr = moment().format("dddd, MMMM D, YYYY");
 
----
+dv.container.innerHTML = `
+  <div class="dash-eyebrow">ACADEMY <span class="dash-eyebrow-dot">·</span> RESEARCH VAULT</div>
+  <h1 class="dash-title">${greeting}.</h1>
+  <div class="dash-subtitle">${dateStr}</div>
+`;
+```
 
-## 📊 Thesis Progress
+</div>
 
-> [!grid-2]
->
-> > [!info]+ Chapter Status
-> > | Ch | Title | Status |
-> > |---|-------|--------|
-> > | 1 | Introduction | ✅ v1 |
-> > | 2 | Background & Related Work | ✅ v1 |
-> > | 3 | System Design & Methods | ✅ v1 |
-> > | 4 | Validation I: Replication | ✍️ WIP |
-> > | 5 | Validation II: Synthetic | ⛏️ Blocked |
-> > | 6 | Discussion | ⛏️ Blocked |
-> > | 7 | Conclusions & Future Work | ⬜ TODO |
-> > | 8 | Bibliography | ✍️ WIP |
-> > | 9 | Annexes | ⬜ TODO |
-> >
-> > **3 / 9** chapters drafted — **open items:** citation verification (Ch.2), Study B data (Ch.4), figures (Ch.3)
->
-> > [!tip]+ Working On
-> > **Thesis**
-> > - [[Thesis/Thesis_v1/OUTLINE|Master outline →]]
-> > - [[Thesis/Thesis_v1/04_validation1_replication|Ch.4 — Validation I ✍️]]
-> > - [[Thesis/Study C Method|Study C — run on workstation]]
-> > - [[Thesis/run_comparison_report|Run comparison report]]
-> > - [[Thesis/Run23 evolution analysis|Run23 evolution]]
-> >
-> > **epykit**
-> > - [[Epykit/fdr_analysis|FDR analysis — fine-tune on dmrseq sim]]
-> > - [[Epykit/study1_vs_study2|Study 1 vs Study 2]]
-> > - [[Epykit/epykit_todo|epykit TODO →]]
+```dataviewjs
+// ── Vault stats ────────────────────────────────────────────────
+// EDIT ME: set your real submission / milestone date below
+const deadline = dv.date("2026-12-01");
 
----
+const allNotes = dv.pages('-".dashboard-backup" and -".smart-env" and -".obsidian"');
+const noteCount = allNotes.length;
 
-## 🔬 Workstream Details
+const openTasks = dv.pages().file.tasks.where(t => !t.completed);
+const dueSoon = openTasks.where(t => t.due && t.due <= dv.date("today").plus({days: 7})).length;
+const overdue = openTasks.where(t => t.due && t.due < dv.date("today")).length;
 
-> [!grid-2]
->
-> > [!abstract]+ Thesis / Mimosa
-> > ### Thesis Draft
-> > - [[Thesis/Thesis_v1/Index|Thesis v1 index]]
-> > - [[Thesis/Thesis_v1/Introduction|Ch.1 — Introduction]]
-> > - [[Thesis/Thesis_v1/Background|Ch.2 — Background]]
-> > - [[Thesis/Thesis_v1/System Design & Methods|Ch.3 — System Design]]
-> > - [[Thesis/Thesis_v1/04_validation1_replication|Ch.4 — Validation I]]
-> > - [[Thesis/Thesis_v1/Bibliography|Bibliography]]
-> >
-> > ### Mimosa & Runs
-> > - [[Thesis/Run23 evolution analysis|Run23 — best F1 but evolution degrades]]
-> > - [[Thesis/run_comparison_report|Runs vs baseline]]
-> > - [[Thesis/Study C Method|Study C method]]
-> > - [[Thesis/Whole bunch of skills that Mimosa can use|Mimosa skill ideas]]
->
-> > [!abstract]+ epykit
-> > ### Core
-> > - [[Epykit/epykit_README|README & API reference]]
-> > - [[Epykit/epykit_todo|TODO list]]
-> > - [[Epykit/Benchmark Results|Benchmark results]]
-> >
-> > ### Diagnostics
-> > - [[Epykit/fdr_analysis|FDR calibration & improvements]]
-> > - [[Epykit/study1_vs_study2|Study 1 vs Study 2 comparison]]
-> >
-> > ### Open Issues
-> > - dmrseq sim data performance gap
-> > - Caching mechanism — double-check `dmc()` cache
-> > - `explore_dataset` function design
+const today = dv.date("today");
+const daysLeft = Math.round(deadline.diff(today, "days").days);
 
----
+const chapterPaths = [
+  "Thesis/Thesis_v1/Introduction.md",
+  "Thesis/Thesis_v1/Background.md",
+  "Thesis/Thesis_v1/System Design & Methods.md",
+  "Thesis/Thesis_v1/04_validation1_replication.md",
+];
+let totalWords = 0;
+for (const p of chapterPaths) {
+  const text = await dv.io.load(p);
+  if (text) totalWords += text.trim().split(/\s+/).filter(Boolean).length;
+}
 
-## 🗓️ Recent Activity
+const stats = [
+  { label: "Notes in vault", value: noteCount.toLocaleString(), icon: "&#128209;" },
+  { label: overdue > 0 ? "Overdue tasks" : "Due within 7 days", value: overdue > 0 ? overdue : dueSoon, icon: "&#9989;", warn: overdue > 0 },
+  { label: "Days to submission", value: daysLeft, icon: "&#8987;" },
+  { label: "Thesis words drafted", value: totalWords.toLocaleString(), icon: "&#129516;" },
+];
 
-> [!grid-bottom]
->
-> > [!note]+ Daily Notes
-> > ```dataview
-> > TABLE WITHOUT ID
-> >   link(file.path, dateformat(file.day, "ccc, MMM d")) AS "Date",
-> >   truncate(join(filter(file.lists.text, (t) => t != null), " · "), 80) AS "Notes"
-> > FROM "Daily notes"
-> > SORT file.day DESC
-> > LIMIT 7
-> > ```
->
-> > [!note]+ Recently Modified
-> > ```dataview
-> > TABLE WITHOUT ID
-> >   file.link AS "Note",
-> >   dateformat(file.mtime, "MMM d, HH:mm") AS "Modified"
-> > FROM "" AND -"Daily notes" AND -".obsidian"
-> > WHERE file.name != "Home"
-> > SORT file.mtime DESC
-> > LIMIT 8
-> > ```
+dv.container.innerHTML = `
+  <div class="stat-grid">
+    ${stats.map(s => `
+      <div class="stat-card ${s.warn ? "stat-warn" : ""}">
+        <div class="stat-icon">${s.icon}</div>
+        <div class="stat-value">${s.value}</div>
+        <div class="stat-label">${s.label}</div>
+      </div>
+    `).join("")}
+  </div>
+`;
+```
 
----
+<div class="dash-row">
+<div class="dash-col">
 
-## 📚 Shared References
+### &#128197; Today
 
-> [!info]+
-> The reference layer connects both workstreams without merging them.
->
-> - [[References/MOC|References MOC →]]
-> - [[WGBS benchmarking|WGBS benchmarking — callers, metrics, datasets]]
-> - DMC/DMR calling methods (DSS, methylKit, dmrseq, BSmooth)
-> - Empirical FDR calibration
-> - WGBS QC, coverage filters, annotation context
+```dataviewjs
+const todayStr = dv.date("today").toFormat("yyyy-MM-dd");
+const todayPath = `Daily notes/${todayStr}.md`;
+const exists = !!dv.page(todayPath);
 
----
+dv.container.innerHTML = `
+  <a class="today-link internal-link" href="${todayPath}" data-href="${todayPath}">
+    <span class="today-dot"></span>
+    <span class="today-label">${exists ? "Open today&rsquo;s note" : "Create today&rsquo;s note"}</span>
+    <span class="today-date">${dv.date("today").toFormat("cccc, LLLL d")}</span>
+  </a>
+`;
+```
 
-## 🧭 Vault Rules
+```tasks
+not done
+(due before tomorrow) OR (due today)
+sort by due
+limit 8
+```
 
-> [!warning]- Architecture (click to expand)
-> - **Thesis/Mimosa** and **epykit** are separate workstreams
-> - Connect them *only* through shared references, WGBS concepts, statistics, methods, or daily notes
-> - Keep project-specific notes inside their own folders
-> - Daily notes are the glue — use them for cross-project journaling
+</div>
+<div class="dash-col">
+
+```dataviewjs
+// ── Thesis chapter progress ─────────────────────────────────────
+// EDIT ME: adjust target word counts to your own expected chapter length
+const chapters = [
+  { title: "Introduction", path: "Thesis/Thesis_v1/Introduction.md", target: 6000 },
+  { title: "Background", path: "Thesis/Thesis_v1/Background.md", target: 9000 },
+  { title: "System Design & Methods", path: "Thesis/Thesis_v1/System Design & Methods.md", target: 14000 },
+  { title: "Validation & Replication", path: "Thesis/Thesis_v1/04_validation1_replication.md", target: 9000 },
+];
+
+let rows = "";
+for (const ch of chapters) {
+  const text = await dv.io.load(ch.path);
+  const words = text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+  const pct = Math.max(2, Math.min(100, Math.round((words / ch.target) * 100)));
+  rows += `
+    <div class="progress-item">
+      <a class="progress-name internal-link" href="${ch.path}" data-href="${ch.path}">${ch.title}</a>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-meta">${words.toLocaleString()} / ${ch.target.toLocaleString()} words &middot; ${pct}%</div>
+    </div>`;
+}
+
+dv.container.innerHTML = `
+  <div class="panel">
+    <h3 class="panel-title"><span class="panel-icon">&#129516;</span> Thesis progress</h3>
+    <div class="progress-list">${rows}</div>
+  </div>
+`;
+```
+
+</div>
+</div>
+
+```dataviewjs
+// ── Active research ──────────────────────────────────────────────
+// EDIT ME: keep status/desc current as work moves along
+const projects = [
+  {
+    name: "Epykit",
+    desc: "DMR calling & benchmarking toolkit",
+    status: "active",
+    links: [
+      { label: "README", path: "Epykit/epykit_README.md" },
+      { label: "Benchmarks", path: "Epykit/Benchmark Results.md" },
+      { label: "FDR analysis", path: "Epykit/fdr_analysis.md" },
+      { label: "To-do", path: "Epykit/epykit_todo.md" },
+    ],
+    touch: "Epykit/epykit_README.md",
+  },
+  {
+    name: "WGBS Benchmarking",
+    desc: "Whole-genome bisulfite sequencing pipeline comparison",
+    status: "active",
+    links: [
+      { label: "Notes", path: "WGBS benchmarking.md" },
+      { label: "DMR overlap report", path: "dmr_overlap_report.html" },
+    ],
+    touch: "WGBS benchmarking.md",
+  },
+  {
+    name: "Thesis \u2014 Study C",
+    desc: "Replication & validation study",
+    status: "in review",
+    links: [
+      { label: "Method", path: "Thesis/Study C Method.md" },
+      { label: "Run comparison", path: "Thesis/run_comparison_report.md" },
+      { label: "Run23 evolution", path: "Thesis/Run23 evolution analysis.md" },
+    ],
+    touch: "Thesis/Study C Method.md",
+  },
+];
+
+function timeAgo(path) {
+  const f = app.vault.getAbstractFileByPath(path);
+  return f ? moment(f.stat.mtime).fromNow() : "&mdash;";
+}
+
+const cards = projects.map(p => `
+  <div class="project-card">
+    <div class="project-head">
+      <span class="project-name">${p.name}</span>
+      <span class="status-pill status-${p.status.replace(/\s+/g, "-")}">${p.status}</span>
+    </div>
+    <p class="project-desc">${p.desc}</p>
+    <div class="project-touched">Last touched ${timeAgo(p.touch)}</div>
+    <div class="project-links">
+      ${p.links.map(l => `<a class="internal-link" href="${l.path}" data-href="${l.path}">${l.label}</a>`).join("")}
+    </div>
+  </div>
+`).join("");
+
+dv.container.innerHTML = `
+  <div class="panel">
+    <h3 class="panel-title"><span class="panel-icon">&#129514;</span> Active research</h3>
+    <div class="project-grid">${cards}</div>
+  </div>
+`;
+```
+
+<div class="dash-row">
+<div class="dash-col">
+
+```dataviewjs
+// ── Recent activity ──────────────────────────────────────────────
+const pages = dv.pages('-".dashboard-backup" and -".smart-env" and -".obsidian"')
+  .where(p => p.file.name !== "Home")
+  .sort(p => p.file.mtime, 'desc')
+  .limit(6);
+
+const rows = pages.map(p => `
+  <a class="activity-item internal-link" href="${p.file.path}" data-href="${p.file.path}">
+    <span class="activity-dot"></span>
+    <span class="activity-main">
+      <span class="activity-name">${p.file.name}</span>
+      <span class="activity-folder">${p.file.folder || "Vault root"}</span>
+    </span>
+    <span class="activity-time">${p.file.mtime.toRelative()}</span>
+  </a>
+`).join("");
+
+dv.container.innerHTML = `
+  <div class="panel">
+    <h3 class="panel-title"><span class="panel-icon">&#128336;</span> Recent activity</h3>
+    <div class="activity-list">${rows}</div>
+  </div>
+`;
+```
+
+</div>
+<div class="dash-col">
+<div class="panel">
+<h3 class="panel-title"><span class="panel-icon">&#129504;</span> Quick navigation</h3>
+<div class="nav-grid">
+<a class="nav-card internal-link" href="Thesis/MOC.md" data-href="Thesis/MOC.md"><span class="nav-icon">&#129517;</span><span class="nav-label">Thesis MOC</span></a>
+<a class="nav-card internal-link" href="Epykit/MOC.md" data-href="Epykit/MOC.md"><span class="nav-icon">&#129516;</span><span class="nav-label">Epykit MOC</span></a>
+<a class="nav-card internal-link" href="References/MOC.md" data-href="References/MOC.md"><span class="nav-icon">&#128218;</span><span class="nav-label">References</span></a>
+<a class="nav-card internal-link" href="TODO.md" data-href="TODO.md"><span class="nav-icon">&#9989;</span><span class="nav-label">Master to-do</span></a>
+<a class="nav-card internal-link" href="Thesis/Thesis_v1/OUTLINE.md" data-href="Thesis/Thesis_v1/OUTLINE.md"><span class="nav-icon">&#128193;</span><span class="nav-label">Thesis outline</span></a>
+<a class="nav-card internal-link" href="Thesis/Whole bunch of skills that Mimosa can use.md" data-href="Thesis/Whole bunch of skills that Mimosa can use.md"><span class="nav-icon">&#129504;</span><span class="nav-label">Skills reference</span></a>
+</div>
+</div>
+</div>
+</div>
+
+```dataviewjs
+// ── Footer ────────────────────────────────────────────────────────
+const tips = [
+  "Commit your vault before a big edit \u2014 obsidian-git has your back.",
+  "Re-run FDR correction whenever you add new DMR calls before trusting a p-value.",
+  "A cluttered outline is a research idea in disguise \u2014 park it in Scratch.md.",
+  "Cite as you write. Future you will not remember which paper that number came from.",
+  "Benchmark early, benchmark often \u2014 regressions hide quietly in pipelines.",
+  "Write the hard paragraph first. Everything after it is easier.",
+  "Back up before you refactor Epykit's core functions.",
+  "A finished draft beats a perfect outline.",
+];
+const tip = tips[dv.date("today").ordinal % tips.length];
+
+dv.container.innerHTML = `
+  <div class="dash-footer">
+    <span class="footer-tip">${tip}</span>
+    <span class="footer-meta">Academy &middot; Obsidian research vault</span>
+  </div>
+`;
+```
