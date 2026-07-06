@@ -18,7 +18,7 @@
 | 1 | `01_introduction.md` | Introduction (8 UniBO sub-elements) | whole thesis | ✅ v1 — §§1.1–1.8 name the 8 UniBO elements explicitly; result-verdict wording to finalize post-experiment |
 | 2 | `02_background.md` | Background & Related Work | literature pass | ✅ v1 — §§2.0–2.6 drafted; ⚠ citations need a verification pass (esp. §2.4–2.5) |
 | 3 | `03_system_design_and_methods.md` | **System Design & Methods** | **nothing — built work** | ✅ v1 — §§3.0–3.7 drafted (figures pending) |
-| 4 | `04_validation1_replication.md` | Validation I — Replication (Study A human, Study B mouse) | Studies A/B results | ⛏️ |
+| 4 | `04_validation1_replication.md` | Validation I — Replication (Study A human, Study B mouse) | Studies A/B results | ✍️ v1 — Study A (GSE263850) drafted from run23; Study B placeholdered; §4.3–4.4 await Study B |
 | 5 | `05_validation2_synthetic_reliability.md` | Validation II — Synthetic (Study C) & Reliability (Study D) | Studies C/D results | ⛏️ |
 | 6 | `06_discussion.md` | Discussion | Ch.4–5 | ⛏️ |
 | 7 | `07_conclusions_future_work.md` | Conclusions & Future Work (multi-omics bridge) | Ch.6 | ⬜ |

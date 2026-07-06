@@ -10,5 +10,7 @@ longform:
     - System Design & Methods
     - Bibliography
     - OUTLINE
-  ignoredFiles: []
+    - 04_validation1_replication
+  ignoredFiles:
+    - Untitled
 ---
