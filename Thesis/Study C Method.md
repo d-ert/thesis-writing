@@ -1,5 +1,12 @@
 # Study C — Synthetic Ground-Truth Benchmark with WGBSSuite
 
+## Connections
+
+- [[Thesis/MOC|Thesis / Mimosa MOC]]
+- [[Thesis/Thesis_v1/04_validation1_replication|Chapter 4 - Validation I: Replication]]
+- [[References/MOC|References MOC]]
+- [[WGBS benchmarking|WGBS benchmarking]]
+
 **Purpose:** operationalise H2 (calibration) — measure whether Mimosa's reported false-discovery rate is honest, and whether its sensitivity is comparable to an expert-run DSS analysis, against data where the true DMRs are known exactly.
 
 **Source:** `git clone https://github.com/SystemsGeneticsSG/WGBSSuite.git` (the old `wgbssuite.org.uk` site is dead; the GitHub mirror is the actual code from Rackham et al. 2015, _Bioinformatics_ 31(13):2223–2225). Cite the paper, link the GitHub repo, and note the dead-link substitution once in your Methods text — reviewers will hit the same dead link if they try to verify it.

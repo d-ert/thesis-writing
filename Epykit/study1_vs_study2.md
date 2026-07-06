@@ -3,6 +3,15 @@ tags:
   - Todo
   - epykit
 ---
+# Study 1 vs Study 2
+
+## Connections
+
+- [[Epykit/MOC|epykit MOC]]
+- [[Epykit/Benchmark Results|Benchmark results]]
+- [[Epykit/fdr_analysis|FDR analysis]]
+- [[References/MOC|References MOC]]
+
 !!! ONEMLIII
 bu comparisona gse verisini de eklicen bunun icin claudish session'i:
 claude --resume ddca1c41-35da-4109-a07c-8ccf8bef90a0

@@ -1,3 +1,18 @@
+---
+tags:
+  - Thesis
+  - Mimosa
+  - Results
+---
+# Run23 evolution analysis
+
+## Connections
+
+- [[Thesis/MOC|Thesis / Mimosa MOC]]
+- [[Thesis/run_comparison_report|Mimosa runs vs baseline]]
+- [[Thesis/Thesis_v1/System Design & Methods|Chapter 3 - System Design & Methods]]
+- [[Thesis/Thesis_v1/04_validation1_replication|Chapter 4 - Validation I: Replication]]
+
 Now let me check evaluation3 and evaluation5.Here's the full picture across all 6 Mimosa iterations, cross-referencing `run_metrics*.json`, `evaluation*.txt`, and the self-verification data embedded in `state_result*.json`.
 
 ## Run-by-run summary

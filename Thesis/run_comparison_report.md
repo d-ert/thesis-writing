@@ -6,6 +6,13 @@ tags:
 ---
 # Analysis of Mimosa WGBS Pipeline Runs vs. Baseline
 
+## Connections
+
+- [[Thesis/MOC|Thesis / Mimosa MOC]]
+- [[Thesis/Thesis_v1/System Design & Methods|Chapter 3 - System Design & Methods]]
+- [[Thesis/Thesis_v1/04_validation1_replication|Chapter 4 - Validation I: Replication]]
+- [[Thesis/Run23 evolution analysis|Run23 evolution analysis]]
+
 This report summarizes the evolutionary progress, failures, and successes of the `mimosa` AI agent runs (`run15` through `run20`) in developing an automated WGBS analysis pipeline. It compares the internal logic of each run and evaluates their outputs against the manually curated **Baseline DSS Results**.
 
 ---
