@@ -87,12 +87,7 @@ dv.container.innerHTML = `
 `;
 ```
 
-```tasks
-not done
-(due before tomorrow) OR (due today)
-sort by due
-limit 8
-```
+
 
 </div>
 <div class="dash-col">
@@ -132,70 +127,75 @@ dv.container.innerHTML = `
 </div>
 
 ```dataviewjs
-// ── Active research ──────────────────────────────────────────────
-// EDIT ME: keep status/desc current as work moves along
-const projects = [
-  {
-    name: "Epykit",
-    desc: "DMR calling & benchmarking toolkit",
-    status: "active",
-    links: [
-      { label: "README", path: "Epykit/epykit_README.md" },
-      { label: "Benchmarks", path: "Epykit/Benchmark Results.md" },
-      { label: "FDR analysis", path: "Epykit/fdr_analysis.md" },
-      { label: "To-do", path: "Epykit/epykit_todo.md" },
-    ],
-    touch: "Epykit/epykit_README.md",
-  },
-  {
-    name: "WGBS Benchmarking",
-    desc: "Whole-genome bisulfite sequencing pipeline comparison",
-    status: "active",
-    links: [
-      { label: "Notes", path: "WGBS benchmarking.md" },
-      { label: "DMR overlap report", path: "dmr_overlap_report.html" },
-    ],
-    touch: "WGBS benchmarking.md",
-  },
-  {
-    name: "Thesis \u2014 Study C",
-    desc: "Replication & validation study",
-    status: "in review",
-    links: [
-      { label: "Method", path: "Thesis/Study C Method.md" },
-      { label: "Run comparison", path: "Thesis/run_comparison_report.md" },
-      { label: "Run23 evolution", path: "Thesis/Run23 evolution analysis.md" },
-    ],
-    touch: "Thesis/Study C Method.md",
-  },
-];
+// ── Action Radar ─────────────────────────────────────────────────
+const today = dv.date("today");
+const nextWeek = today.plus({days: 7});
+const nextMonth = today.plus({days: 30});
 
-function timeAgo(path) {
-  const f = app.vault.getAbstractFileByPath(path);
-  return f ? moment(f.stat.mtime).fromNow() : "&mdash;";
+const allTasks = dv.pages('-".dashboard-backup" and -".smart-env" and -".obsidian"').file.tasks.where(t => !t.completed && t.due);
+
+const overdueToday = allTasks.where(t => t.due <= today).sort(t => t.due);
+const thisWeek = allTasks.where(t => t.due > today && t.due <= nextWeek).sort(t => t.due);
+const thisMonth = allTasks.where(t => t.due > nextWeek && t.due <= nextMonth).sort(t => t.due);
+
+function getPriority(text) {
+  if (text.includes("🔺")) return { level: 1, label: "Highest", color: "var(--dash-hot)" };
+  if (text.includes("⏫")) return { level: 2, label: "High", color: "var(--dash-amber)" };
+  if (text.includes("🔼")) return { level: 3, label: "Medium", color: "var(--dash-cold)" };
+  if (text.includes("🔽") || text.includes("⏬")) return { level: 5, label: "Low", color: "var(--dash-fog)" };
+  return { level: 4, label: "Normal", color: "transparent" };
 }
 
-const cards = projects.map(p => `
-  <div class="project-card">
-    <div class="project-head">
-      <span class="project-name">${p.name}</span>
-      <span class="status-pill status-${p.status.replace(/\s+/g, "-")}">${p.status}</span>
+function renderTask(t) {
+  const prio = getPriority(t.text);
+  // Strip out tasks plugin emojis/dates for a cleaner UI
+  let cleanText = t.text.replace(/[\u{1F53A}\u{23EB}\u{1F53C}\u{1F53D}\u{23EC}]/gu, "").replace(/📅\s*\d{4}-\d{2}-\d{2}/, "").trim();
+  
+  const dueStr = t.due.toFormat("MMM d");
+  const prioDot = prio.level < 4 ? `<span class="task-prio-dot" style="background: ${prio.color}; box-shadow: 0 0 6px ${prio.color}"></span>` : "";
+  
+  return `
+    <div class="dash-task">
+      <div class="dash-task-check"></div>
+      <div class="dash-task-body">
+        <div class="dash-task-text"><a class="internal-link" href="${t.path}" data-href="${t.path}">${cleanText}</a></div>
+        <div class="dash-task-meta">
+          ${prioDot} <span style="color:${prio.level < 4 ? prio.color : 'inherit'}" class="task-prio-label">${prio.label !== 'Normal' ? prio.label + ' &middot; ' : ''}</span>
+          <span class="dash-task-due">&#128197; ${dueStr}</span>
+        </div>
+      </div>
     </div>
-    <p class="project-desc">${p.desc}</p>
-    <div class="project-touched">Last touched ${timeAgo(p.touch)}</div>
-    <div class="project-links">
-      ${p.links.map(l => `<a class="internal-link" href="${l.path}" data-href="${l.path}">${l.label}</a>`).join("")}
+  `;
+}
+
+function renderCol(title, tasks, icon) {
+  const html = tasks.length > 0 
+    ? tasks.map(t => renderTask(t)).join("")
+    : `<div class="dash-task-empty">No upcoming tasks</div>`;
+  
+  return `
+    <div class="dash-task-col">
+      <div class="dash-task-col-head">
+        <h4 class="dash-task-col-title">${icon} ${title}</h4>
+        <span class="dash-task-count">${tasks.length}</span>
+      </div>
+      <div class="dash-task-list">${html}</div>
     </div>
-  </div>
-`).join("");
+  `;
+}
 
 dv.container.innerHTML = `
-  <div class="panel">
-    <h3 class="panel-title"><span class="panel-icon">&#129514;</span> Active research</h3>
-    <div class="project-grid">${cards}</div>
+  <div class="panel" style="margin-bottom: 1.75rem;">
+    <h3 class="panel-title"><span class="panel-icon">&#9889;</span> Action Radar</h3>
+    <div class="dash-task-board">
+      ${renderCol("Due & Overdue", overdueToday, "&#128680;")}
+      ${renderCol("Next 7 Days", thisWeek, "&#128197;")}
+      ${renderCol("Later this Month", thisMonth, "&#128198;")}
+    </div>
   </div>
 `;
 ```
+
 
 <div class="dash-row">
 <div class="dash-col">
@@ -240,6 +240,66 @@ dv.container.innerHTML = `
 </div>
 </div>
 </div>
+
+```dataviewjs
+// ── Momentum Heatmap ─────────────────────────────────────────────
+const daysToTrack = 84; // 12 weeks
+const today = dv.date("today");
+let activity = {};
+
+for (let i = 0; i < daysToTrack; i++) {
+  let d = today.minus({days: i}).toFormat("yyyy-MM-dd");
+  activity[d] = 0;
+}
+
+dv.pages('-".obsidian" and -".smart-env" and -".dashboard-backup"').forEach(p => {
+  if (p.file.mtime) {
+    let mDate = p.file.mtime.toFormat("yyyy-MM-dd");
+    if (activity[mDate] !== undefined) {
+      activity[mDate]++;
+    }
+  }
+});
+
+let orderedDays = [];
+for (let i = daysToTrack - 1; i >= 0; i--) {
+  orderedDays.push(today.minus({days: i}).toFormat("yyyy-MM-dd"));
+}
+
+let html = '<div class="dash-heatmap-container"><div class="dash-heatmap-grid">';
+
+orderedDays.forEach(d => {
+  let count = activity[d];
+  let level = 0;
+  if (count > 0) level = 1;
+  if (count > 2) level = 2;
+  if (count > 5) level = 3;
+  if (count > 10) level = 4;
+  
+  html += `<div class="dash-heatmap-cell" data-level="${level}" title="${d}: ${count} updates"></div>`;
+});
+
+html += '</div>';
+html += `<div class="dash-heatmap-meta">
+  <span>Last 12 weeks</span>
+  <div class="dash-heatmap-legend">
+    <span>Less</span>
+    <div class="dash-heatmap-cell" data-level="0"></div>
+    <div class="dash-heatmap-cell" data-level="1"></div>
+    <div class="dash-heatmap-cell" data-level="2"></div>
+    <div class="dash-heatmap-cell" data-level="3"></div>
+    <div class="dash-heatmap-cell" data-level="4"></div>
+    <span style="margin-left:4px">More</span>
+  </div>
+</div></div>`;
+
+dv.container.innerHTML = `
+  <div class="panel" style="margin-top: 1.5rem;">
+    <h3 class="panel-title"><span class="panel-icon">&#128293;</span> Writing Momentum</h3>
+    ${html}
+  </div>
+`;
+```
 </div>
 
 ```dataviewjs

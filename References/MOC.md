@@ -11,6 +11,7 @@ Shared literature and methods notes live here. This layer can connect thesis/Mim
 
 - [[WGBS benchmarking|WGBS benchmarking]]
 
+
 ## Methods And Concepts
 
 - DMC and DMR calling
@@ -22,3 +23,15 @@ Shared literature and methods notes live here. This layer can connect thesis/Mim
 
 - [[Thesis/MOC|Thesis / Mimosa]]
 - [[Epykit/MOC|epykit]]
+
+## Literature (`papers/`)
+
+```dataview
+TABLE 
+  title as "Title",
+  year as "Year",
+  choice(read, "✅", "❌") as "Read",
+  Relevance as "Relevance to Thesis"
+FROM "References/papers"
+SORT year DESC
+```
