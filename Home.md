@@ -24,7 +24,7 @@ dv.container.innerHTML = `
 ```dataviewjs
 // ── Vault stats ────────────────────────────────────────────────
 // EDIT ME: set your real submission / milestone date below
-const deadline = dv.date("2026-12-01");
+const deadline = dv.date("2026-09-01");
 
 const allNotes = dv.pages('-".dashboard-backup" and -".smart-env" and -".obsidian"');
 const noteCount = allNotes.length;
