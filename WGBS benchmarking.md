@@ -8,8 +8,8 @@ tags:
 
 ## Connections
 
-- [[References/MOC|References MOC]]
-- Used as shared background by [[Thesis/MOC|Thesis / Mimosa]] and [[Epykit/MOC|epykit]]
+- [[References MOC|References MOC]]
+- Used as shared background by [[Thesis MOC|Thesis / Mimosa]] and [[Epykit MOC|epykit]]
 
 WGBS benchmarking splits into three linked facets: **QC metrics**, **annotation-aware evaluation**, and **DMC/DMR method performance**. Across studies, benchmarks increasingly test not just read-level quality but also whether pipeline choices change methylation estimates, genomic feature coverage, and downstream biological calls  (Gong et al., 2022; Guo et al., 2025).
 

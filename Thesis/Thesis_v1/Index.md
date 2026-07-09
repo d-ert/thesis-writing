@@ -19,7 +19,7 @@ longform:
 
 ## Navigation
 
-- [[Thesis/MOC|Thesis / Mimosa MOC]]
+- [[Thesis MOC|Thesis / Mimosa MOC]]
 - [[OUTLINE|Master outline and writing tracker]]
 - [[Introduction|Chapter 1 - Introduction]]
 - [[Background|Chapter 2 - Background & Related Work]]
@@ -32,4 +32,4 @@ longform:
 - [[../Study C Method|Study C Method]]
 - [[../run_comparison_report|Run comparison report]]
 - [[../Run23 evolution analysis|Run23 evolution analysis]]
-- [[../../References/MOC|References]]
+- [[References MOC|References]]

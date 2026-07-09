@@ -2,9 +2,9 @@
 
 ## Connections
 
-- [[Thesis/MOC|Thesis / Mimosa MOC]]
+- [[Thesis MOC|Thesis / Mimosa MOC]]
 - [[Thesis/Thesis_v1/04_validation1_replication|Chapter 4 - Validation I: Replication]]
-- [[References/MOC|References MOC]]
+- [[References MOC|References MOC]]
 - [[WGBS benchmarking|WGBS benchmarking]]
 
 **Purpose:** operationalise H2 (calibration) — measure whether Mimosa's reported false-discovery rate is honest, and whether its sensitivity is comparable to an expert-run DSS analysis, against data where the true DMRs are known exactly.

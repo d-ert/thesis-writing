@@ -8,7 +8,7 @@ tags:
 
 ## Connections
 
-- [[Thesis/MOC|Thesis / Mimosa MOC]]
+- [[Thesis MOC|Thesis / Mimosa MOC]]
 - [[Thesis/run_comparison_report|Mimosa runs vs baseline]]
 - [[Thesis/Thesis_v1/System Design & Methods|Chapter 3 - System Design & Methods]]
 - [[Thesis/Thesis_v1/04_validation1_replication|Chapter 4 - Validation I: Replication]]

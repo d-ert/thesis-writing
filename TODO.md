@@ -21,7 +21,7 @@ tags:
 
 ### Shared references
 
-- [[References/MOC|References MOC]]
+- [[References MOC|References MOC]]
 
 
 

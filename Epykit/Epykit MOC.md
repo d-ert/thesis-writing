@@ -21,6 +21,6 @@ This workstream covers epykit package development, benchmarking, calibration, an
 
 ## Shared References
 
-- [[References/MOC|References MOC]]
+- [[References MOC|References MOC]]
 - [[WGBS benchmarking|WGBS benchmarking]]
 

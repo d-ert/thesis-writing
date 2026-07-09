@@ -55,30 +55,14 @@ Open both `.pdf` files (`evince` on Linux) and check:
 - the main run shows visible separation between the two sample-group traces in the differentially-methylated blocks,
 - the null run shows the two traces tracking each other closely (only noise, no systematic offset).
 
-### Before writing any conversion code — inspect the raw column layout (Plan §3, item 1)
 
-Don't assume the column names. Based on the script's own `generate_sim_set()` logic, the `.txt` file should be a flat table with:
 
-```
-col 1: locs        (CpG genomic position)
-col 2: diff_methed (0/1 — is this CpG truly in a differentially-methylated block)
-cols 3+: 4 columns per replicate × (replicates × samples) = 4 × 3 × 2 = 24 columns
-         → each block of 4 = [methylated_count (x), coverage (n), coverage (repeated), proportion]
-```
 
-So you should see **26 total columns**. Confirm this directly:
+# After the Mimosa run — this is where H2 actually gets computed
 
-bash
+Mimosa's own output isn't the endpoint; it's one of three inputs to a separate scoring pass:
 
-```bash
-head -n 3 analysis_out/study_C_run2_5000_..._.txt | column -t
-wc -l analysis_out/study_C_run2_5000_..._.txt
-```
-
-Check that:
-
-1. Column count matches 26 (2 + 24).
-2. Column 2 (`diff_methed`) is binary and its 1s cluster in contiguous runs (not scattered) — that's your ground-truth DMR signal.
-3. The 4-column repeating pattern per replicate matches `x / n / coverage / proportion` as expected, so you know exactly which raw columns become which BSseq/DSS/Mimosa input columns later.
-
-Once you've confirmed that layout, you're ready for the actual Section 3 conversion work: reshaping into DSS's `(chr, pos, N, X)` format for the expert arm, and into a Bismark-style `.cov` for the Mimosa arm. Want to do that inspection together first (paste `head` output here) before I help draft the conversion script?
+1. **Run the expert-DSS baseline** on `expert_arm/` yourself (or via the MCP server directly, not through Mimosa) using your existing `DMLfit.multiFactor` → `DMLtest.multiFactor` → `callDMR` script — same as Study A/B.
+2. **Take both arms' output tables** (Mimosa's DMC/DMR calls, expert-DSS's DMC/DMR calls) and score each against `ground_truth/truth_vector.txt` using WGBSSuite's `extract_DMR_phase()` / `score_overlap()` / `score_overlap_DMR()` (or your own reimplementation, per the OUTLINE §3.6 shared scoring library plan).
+3. **Sweep thresholds**, not just one cutoff — build the reported-FDR-vs-empirical-FDR calibration curve per arm. This is the Chapter 5 figure the whole study exists to produce.
+4. **Repeat 2–3 on the null-run outputs** — every call there is a false positive by construction, so this gives you a direct FPR-under-null number as a sanity anchor beside the calibration curve.

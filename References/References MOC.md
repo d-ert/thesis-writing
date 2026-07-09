@@ -21,8 +21,8 @@ Shared literature and methods notes live here. This layer can connect thesis/Mim
 
 ## Used By
 
-- [[Thesis/MOC|Thesis / Mimosa]]
-- [[Epykit/MOC|epykit]]
+- [[Thesis MOC|Thesis / Mimosa]]
+- [[Epykit MOC|epykit]]
 
 ## Literature (`papers/`)
 

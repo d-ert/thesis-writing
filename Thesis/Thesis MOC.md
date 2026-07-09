@@ -33,6 +33,6 @@ This workstream covers the thesis, Mimosa validation, Toolomics methylation tool
 
 ## Shared References
 
-- [[References/MOC|References MOC]]
+- [[References MOC|References MOC]]
 - [[WGBS benchmarking|WGBS benchmarking]]
 

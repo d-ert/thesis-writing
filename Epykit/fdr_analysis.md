@@ -7,10 +7,10 @@ tags:
 
 ## Connections
 
-- [[Epykit/MOC|epykit MOC]]
+- [[Epykit MOC|epykit MOC]]
 - [[Epykit/epykit_todo|epykit TODO]]
 - [[Epykit/study1_vs_study2|Study 1 vs Study 2]]
-- [[References/MOC|References MOC]]
+- [[References MOC|References MOC]]
 
 After reviewing the provided source code in detail, I identified several statistical choices that can inflate the false-discovery rate (FDR) or reduce power. The most critical issue is an arbitrary degrees‑of‑freedom floor in the quasi‑likelihood F‑test, which can make p‑values far too liberal. Below I walk through each component you asked about, point out the problems, and suggest targeted improvements.
 
