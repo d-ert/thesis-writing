@@ -2,7 +2,7 @@
 tags:
   - daily
 ---
-# `= dateformat(date(today), "EEEE, MMMM d, yyyy")`
+ **`= dateformat(date(today), "EEEE, MMMM d, yyyy")`**
 
 ## Links
 - [[Thesis MOC|Thesis / Mimosa]]
