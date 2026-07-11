@@ -5,14 +5,12 @@ tags:
  **`= dateformat(date(today), "EEEE, MMMM d, yyyy")`**
 
 ## Links
-- [[Thesis MOC|Thesis / Mimosa]]
-- [[Epykit MOC|epykit]]
-- [[References MOC|References]]
-- [[TODO|TODO]]
+
 
 ---
 
 ## 📝 Journal
+
 
 
 ## 🎯 Today's Focus
