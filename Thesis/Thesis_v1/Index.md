@@ -11,6 +11,7 @@ longform:
     - Bibliography
     - OUTLINE
     - 04_validation1_replication
+    - README
   ignoredFiles:
     - Untitled
 ---
