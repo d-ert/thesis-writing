@@ -31,9 +31,3 @@ claims:
 - Complete the fine tune of study 2 [[2026-07-06]]
 	- The scripts to run= epykit_run.py (try the params here) --> asd.py (converts the csv's) --> scratch_onlyfromtsv.qmd (creates the final report)
 
-### Shared references
-
-- [[References MOC|References MOC]]
-
-
-

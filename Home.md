@@ -67,7 +67,20 @@ dv.container.innerHTML = `
   </div>
 `;
 ```
-
+</div>
+<div class="dash-col">
+<div class="panel">
+<h3 class="panel-title"><span class="panel-icon">&#129504;</span> Quick navigation</h3>
+<div class="nav-grid">
+<a class="nav-card internal-link" href="Thesis/Thesis MOC.md" data-href="Thesis/Thesis MOC.md"><span class="nav-icon">&#129517;</span><span class="nav-label">Thesis MOC</span></a>
+<a class="nav-card internal-link" href="Epykit/Epykit MOC.md" data-href="Epykit/Epykit MOC.md"><span class="nav-icon">&#129516;</span><span class="nav-label">Epykit MOC</span></a>
+<a class="nav-card internal-link" href="References/MOC.md" data-href="References/MOC.md"><span class="nav-icon">&#128218;</span><span class="nav-label">References</span></a>
+<a class="nav-card internal-link" href="TODO.md" data-href="TODO.md"><span class="nav-icon">&#9989;</span><span class="nav-label">Master to-do</span></a>
+<a class="nav-card internal-link" href="Thesis/Thesis_v1/OUTLINE.md" data-href="Thesis/Thesis_v1/OUTLINE.md"><span class="nav-icon">&#128193;</span><span class="nav-label">Thesis outline</span></a>
+<a class="nav-card internal-link" href="Thesis/Whole bunch of skills that Mimosa can use.md" data-href="Thesis/Whole bunch of skills that Mimosa can use.md"><span class="nav-icon">&#129504;</span><span class="nav-label">Skills reference</span></a>
+</div>
+</div>
+</div>
 
 ```dataviewjs
 // ── Action Radar ─────────────────────────────────────────────────
@@ -169,20 +182,7 @@ dv.container.innerHTML = `
 `;
 ```
 
-</div>
-<div class="dash-col">
-<div class="panel">
-<h3 class="panel-title"><span class="panel-icon">&#129504;</span> Quick navigation</h3>
-<div class="nav-grid">
-<a class="nav-card internal-link" href="Thesis/MOC.md" data-href="Thesis/MOC.md"><span class="nav-icon">&#129517;</span><span class="nav-label">Thesis MOC</span></a>
-<a class="nav-card internal-link" href="Epykit/MOC.md" data-href="Epykit/MOC.md"><span class="nav-icon">&#129516;</span><span class="nav-label">Epykit MOC</span></a>
-<a class="nav-card internal-link" href="References/MOC.md" data-href="References/MOC.md"><span class="nav-icon">&#128218;</span><span class="nav-label">References</span></a>
-<a class="nav-card internal-link" href="TODO.md" data-href="TODO.md"><span class="nav-icon">&#9989;</span><span class="nav-label">Master to-do</span></a>
-<a class="nav-card internal-link" href="Thesis/Thesis_v1/OUTLINE.md" data-href="Thesis/Thesis_v1/OUTLINE.md"><span class="nav-icon">&#128193;</span><span class="nav-label">Thesis outline</span></a>
-<a class="nav-card internal-link" href="Thesis/Whole bunch of skills that Mimosa can use.md" data-href="Thesis/Whole bunch of skills that Mimosa can use.md"><span class="nav-icon">&#129504;</span><span class="nav-label">Skills reference</span></a>
-</div>
-</div>
-</div>
+
 
 ```dataviewjs
 // ── Momentum Heatmap ─────────────────────────────────────────────
