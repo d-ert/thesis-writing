@@ -68,63 +68,6 @@ dv.container.innerHTML = `
 `;
 ```
 
-<div class="dash-row">
-<div class="dash-col">
-
-### &#128197; Today
-
-```dataviewjs
-const todayStr = dv.date("today").toFormat("yyyy-MM-dd");
-const todayPath = `Daily notes/${todayStr}.md`;
-const exists = !!dv.page(todayPath);
-
-dv.container.innerHTML = `
-  <a class="today-link internal-link" href="${todayPath}" data-href="${todayPath}">
-    <span class="today-dot"></span>
-    <span class="today-label">${exists ? "Open today&rsquo;s note" : "Create today&rsquo;s note"}</span>
-    <span class="today-date">${dv.date("today").toFormat("cccc, LLLL d")}</span>
-  </a>
-`;
-```
-
-
-
-</div>
-<div class="dash-col">
-
-```dataviewjs
-// ── Thesis chapter progress ─────────────────────────────────────
-// EDIT ME: adjust target word counts to your own expected chapter length
-const chapters = [
-  { title: "Introduction", path: "Thesis/Thesis_v1/Introduction.md", target: 6000 },
-  { title: "Background", path: "Thesis/Thesis_v1/Background.md", target: 9000 },
-  { title: "System Design & Methods", path: "Thesis/Thesis_v1/System Design & Methods.md", target: 14000 },
-  { title: "Validation & Replication", path: "Thesis/Thesis_v1/04_validation1_replication.md", target: 9000 },
-];
-
-let rows = "";
-for (const ch of chapters) {
-  const text = await dv.io.load(ch.path);
-  const words = text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
-  const pct = Math.max(2, Math.min(100, Math.round((words / ch.target) * 100)));
-  rows += `
-    <div class="progress-item">
-      <a class="progress-name internal-link" href="${ch.path}" data-href="${ch.path}">${ch.title}</a>
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="progress-meta">${words.toLocaleString()} / ${ch.target.toLocaleString()} words &middot; ${pct}%</div>
-    </div>`;
-}
-
-dv.container.innerHTML = `
-  <div class="panel">
-    <h3 class="panel-title"><span class="panel-icon">&#129516;</span> Thesis progress</h3>
-    <div class="progress-list">${rows}</div>
-  </div>
-`;
-```
-
-</div>
-</div>
 
 ```dataviewjs
 // ── Action Radar ─────────────────────────────────────────────────
@@ -301,6 +244,52 @@ dv.container.innerHTML = `
 `;
 ```
 </div>
+
+
+
+<div class="dash-row">
+<div class="dash-col">
+
+
+
+</div>
+<div class="dash-col">
+
+```dataviewjs
+// ── Thesis chapter progress ─────────────────────────────────────
+// EDIT ME: adjust target word counts to your own expected chapter length
+const chapters = [
+  { title: "Introduction", path: "Thesis/Thesis_v1/Introduction.md", target: 6000 },
+  { title: "Background", path: "Thesis/Thesis_v1/Background.md", target: 9000 },
+  { title: "System Design & Methods", path: "Thesis/Thesis_v1/System Design & Methods.md", target: 14000 },
+  { title: "Validation & Replication", path: "Thesis/Thesis_v1/04_validation1_replication.md", target: 9000 },
+];
+
+let rows = "";
+for (const ch of chapters) {
+  const text = await dv.io.load(ch.path);
+  const words = text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+  const pct = Math.max(2, Math.min(100, Math.round((words / ch.target) * 100)));
+  rows += `
+    <div class="progress-item">
+      <a class="progress-name internal-link" href="${ch.path}" data-href="${ch.path}">${ch.title}</a>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-meta">${words.toLocaleString()} / ${ch.target.toLocaleString()} words &middot; ${pct}%</div>
+    </div>`;
+}
+
+dv.container.innerHTML = `
+  <div class="panel">
+    <h3 class="panel-title"><span class="panel-icon">&#129516;</span> Thesis progress</h3>
+    <div class="progress-list">${rows}</div>
+  </div>
+`;
+```
+
+</div>
+</div>
+
+
 
 ```dataviewjs
 // ── Footer ────────────────────────────────────────────────────────
