@@ -18,5 +18,7 @@ longform:
     - 09_bibliography
     - 10_annexes
     - OUTLINE
-  ignoredFiles: []
+    - Thesis
+  ignoredFiles:
+    - manuscript
 ---
