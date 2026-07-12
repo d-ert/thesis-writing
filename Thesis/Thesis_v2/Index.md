@@ -5,7 +5,6 @@ longform:
   workflow: Default Workflow
   sceneFolder: /
   scenes:
-    - 01_introduction
     - 02_background
     - 03_system_design_and_methods
     - 04_experiment1_gse263850
@@ -21,4 +20,8 @@ longform:
     - Thesis
   ignoredFiles:
     - manuscript
+    - 001_introduction
+    - 001_intro_claude
+    - 01_intro_claude
+    - 01_thesis_intro_background
 ---

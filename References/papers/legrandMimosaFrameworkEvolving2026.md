@@ -18,7 +18,7 @@ related: []
 > **Authors:** Martin Legrand, Tao Jiang, Matthieu Feraud, Benjamin Navet, Yousouf Taghzouti, Fabien Gandon, Elise Dumont, Louis-Félix Nothias
 > **Year:** 2026
 > **Journal:** 
-> **Links:**  | [DOI](https://doi.org/)
+> **Links:** [Preprint PDF](zotero://select/library/items/BUZPQAG8) | [DOI](https://doi.org/)
 
 ---
 
@@ -34,7 +34,7 @@ related: []
 ## 🧠 Synthesis & Thoughts
 *(This is where you synthesize how this relates to your work. Does it support your methodology? Does it contradict a previous paper?)*
 
-- **Relevance**:: Mimosa Paper
+- **Relevance**:: 
 - **Methodology**:: 
 - **Key Findings**::  
 

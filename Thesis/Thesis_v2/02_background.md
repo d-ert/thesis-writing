@@ -1,77 +1,17 @@
 # Chapter 2 — Background & Related Work
 
-## 2.0 Introduction to the chapter
+## 2.1 DNA Methylation and Whole-Genome Bisulfite Sequencing
 
-This chapter assembles the background needed to read the rest of the thesis and locates the work
-within two literatures that rarely meet. The first is the established science of **whole-genome
-bisulfite sequencing (WGBS)** and **differential DNA-methylation analysis**: a mature field with
-canonical data formats, statistical models, and software whose behaviour is well characterised.
-The second is the fast-moving field of **tool-augmented large language model (LLM) agents** —
-systems that plan, call external tools, and act on their results — and the still-young question
-of whether such agents can be trusted with scientific analysis. The thesis sits exactly at the
-seam between them: it takes a domain whose correct answers are knowable (§2.1–2.3) and asks
-whether an agent (§2.4–2.5) can reach them autonomously.
+DNA methylation is the covalent addition of a methyl group to the 5-carbon of cytosine, producing 5-methylcytosine (5mC). In vertebrates it occurs predominantly at cytosine–guanine dinucleotides (CpG sites); although only a small fraction of genomic cytosines are methylated overall, CpG sites are methylated the large majority of the time [2]. Methylation at gene promoters is generally repressive: a methylated CpG site restricts the binding of transcription factors, whereas an unmethylated site permits it, so methylation state is tightly linked to transcriptional regulation, cellular differentiation, genomic imprinting, and X-chromosome inactivation [2, 3]. Aberrant methylation — hypermethylation of tumour-suppressor promoters, hypomethylation of oncogenes — is a well-established feature of cancer, which is part of why differential-methylation analysis is clinically as well as biologically motivated [2, 3].
 
-The chapter proceeds accordingly. §2.1 introduces DNA methylation and the WGBS assay that
-measures it. §2.2 follows the data from raw reads to per-cytosine coverage through the alignment
-pipeline the system of Chapter 3 wraps. §2.3 defines differentially methylated cytosines and
-regions (DMCs and DMRs) and contrasts the two statistical engines — methylKit and DSS — that the
-agent routes between. §2.4 turns to LLM agents, tool use, and the Model Context Protocol (MCP)
-that connects an agent to scientific software. §2.5 surveys autonomous agents for science and the
-reliability problem that motivates the experimental programme. §2.6 states the gap these
-literatures leave open, which the hypothesis of Chapter 1 sets out to close.
+Whole-genome bisulfite sequencing measures methylation at single-base resolution across an entire genome by exploiting a simple chemical asymmetry: treatment with sodium bisulfite deaminates unmethylated cytosines to uracil, which is read as thymine during sequencing, while methylated cytosines are left unconverted and continue to read as cytosine [2, 3]. Comparing the resulting sequence to an unconverted reference therefore recovers, at each covered CpG site, an estimated methylation level as the ratio of reads retaining a cytosine call to total reads at that site. Because bisulfite conversion introduces a large and systematic mismatch between reads and the reference genome, standard aligners perform poorly on unconverted references; dedicated bisulfite aligners such as Bismark instead align reads against *in-silico* converted versions of the genome (or use "wildcard" aligners that treat unconverted cytosines specially) before recovering per-site methylation calls [2]. A typical WGBS analysis therefore proceeds through six broadly agreed stages: raw-read quality control and adapter trimming; bisulfite-aware alignment to a reference genome; post-alignment quality assessment; per-cytosine methylation extraction; differential methylation testing at the level of individual cytosines and/or aggregated regions; and, finally, annotation of the resulting regions against gene models and regulatory features [2].
 
-A note on sources is warranted at the outset. The methodological literature of §2.1–2.3 is
-settled and is cited to its primary papers. The agent literature of §2.4–2.5 is recent and moves
-faster than any single snapshot; claims there are tied to primary sources where available, and the
-reader should be aware that findings in this area may evolve between writing and publication.
+
+WGBS is the most comprehensive methylation assay but not the only one: reduced-representation bisulfite sequencing (RRBS) enriches for CpG-dense regions at lower cost, and methylation microarrays (the Illumina 450K and EPIC platforms) interrogate a fixed panel of pre-selected CpGs. These trade genome-wide coverage for cost or convenience. The experiments of this thesis use WGBS coverage data.
 
 ---
-
-## 2.1 DNA methylation and whole-genome bisulfite sequencing
-
-**The modification.** DNA methylation is a covalent epigenetic mark in which a methyl group is
-added to the fifth carbon of a cytosine base, producing 5-methylcytosine (5mC). In mammalian
-genomes it occurs predominantly at cytosines immediately followed by a guanine — the **CpG
-dinucleotide** — and it is one of the most stable and best-studied carriers of epigenetic
-information, shaping gene regulation without altering the underlying sequence [@bird2002;
-@jones2012]. Its distribution is non-random and biologically consequential: short CpG-dense
-stretches called **CpG islands**, often overlapping gene promoters, are typically unmethylated in
-active genes, whereas methylation of a promoter island is generally associated with
-transcriptional silencing; gene bodies, repetitive elements, and intergenic regions follow their
-own characteristic patterns [@jones2012]. Because these patterns are laid down and maintained in
-response to developmental and environmental signals, differences in methylation between
-conditions — a knockout versus its wild type, a disease cohort versus controls — are read as
-candidate regulatory events.
-
-**Measuring it: bisulfite conversion.** The foundational technique for reading methylation at
-single-base resolution is **bisulfite conversion** [@frommer1992]. Treating DNA with sodium
-bisulfite deaminates unmethylated cytosines to uracil (read as thymine after amplification), while
-5-methylcytosine is protected and remains a cytosine. After sequencing, the methylation state of
-each cytosine is therefore inferred from a simple contrast: positions that read as C were
-methylated, positions that read as T were not, and the **methylation level** of a site is the
-fraction of reads still showing C. Applying this genome-wide and at base resolution yields a
-**whole-genome bisulfite sequencing (WGBS)** methylome [@lister2009; @cokus2008], the assay this
-thesis works with.
-
-**The data model.** For the analysis that follows, the salient point is that WGBS reduces, per
-CpG site, to two integer counts: the number of methylated reads and the number of unmethylated
-reads covering that position. The methylation level is the ratio of the first to their sum, and
-the reliability of that ratio depends on the **coverage** (the total read count) at the site —
-a CpG seen by three reads carries far less information than one seen by thirty. This count-based,
-coverage-weighted structure is what the downstream statistics of §2.3 are built around, and it is
-why coverage filtering is the first quality-control step of every pipeline in this work.
-
-**Alternatives and scope.** WGBS is the most comprehensive methylation assay but not the only one:
-reduced-representation bisulfite sequencing (RRBS) enriches for CpG-dense regions at lower cost,
-and methylation microarrays (the Illumina 450K and EPIC platforms) interrogate a fixed panel of
-pre-selected CpGs. These trade genome-wide coverage for cost or convenience, and the claim-level
-metadata that distinguishes them is exactly what the epigenomics adapter of §3.7 standardises. The
-experiments of this thesis use WGBS coverage data throughout.
-
----
-
-## 2.2 From reads to coverage: the alignment pipeline
+## 2.2 From reads to coverage: the alignment pipeline 
+- [ ] task⏫ 📅 2026-07-19 (BURAYA ALİGNMENT PİPELİNE'YLA VE NEXTFLOWLA İLGİLİ BİŞEY YAP YAP)
 
 Between the sequencer and the statistics sits an alignment-and-extraction pipeline whose job is to
 turn millions of short, bisulfite-converted reads into the per-CpG count table of §2.1. This is
@@ -108,60 +48,98 @@ studies even when the alignment half is exercised only at small synthetic scale.
 
 ---
 
-## 2.3 Differential methylation: DMCs, DMRs, and two statistical engines
+## 2.3 The Differential Methylation Analysis Pipeline
 
-The scientific question WGBS is used to answer is comparative: where does methylation differ
-between two groups, and in which direction? Answering it well is a non-trivial statistical
-problem, and the choice of method materially affects the result — which is precisely why the
-agent needs the engine-selection skill of §3.4, and why the validation of Chapters 4–6 must score
-against more than one baseline.
+The step that this thesis is centrally concerned with — identifying differentially methylated cytosines (DMCs) and differentially methylated regions (DMRs) between two or more biological conditions — is also the step with the least methodological consensus. A 2018 survey classified twenty-two published approaches into seven conceptual families: logistic-regression methods such as methylKit, which models methylation proportions directly and can operate with or without biological replicates; smoothing-based methods such as BSmooth and BiSeq, which borrow statistical strength from neighbouring CpG sites to reduce required coverage; beta-binomial methods such as DSS, MOABS, and RADMeth, which jointly model sampling variability (via a binomial term) and biological variability across replicates (via a beta term); hidden-Markov-model approaches; Shannon-entropy-based approaches; approaches built on classical hypothesis tests (Fisher's exact test, ANOVA) applied within fixed or variable genomic windows; and binary-segmentation approaches such as metilene [2]. Each family makes different trade-offs among considering biological replication, spatial correlation between neighbouring sites, sequencing coverage, additional covariates, and the ability to call *de novo* regions rather than only testing predefined ones, and — critically — no single method dominates the others across all of these axes [2].
 
-**DMCs versus DMRs.** Two units of analysis are standard. A **differentially methylated cytosine
-(DMC)** is a single CpG whose methylation level differs significantly between groups. A
-**differentially methylated region (DMR)** is a contiguous genomic interval — often a fixed-width
-tile or a run of adjacent DMCs — that differs as a unit. DMRs are usually the more biologically
-interpretable object, because regulatory effects act over regions rather than isolated bases and
-because aggregating neighbouring CpGs improves statistical power and reduces the multiple-testing
-burden; DMCs offer finer resolution at the cost of many more tests. A region is summarised by an
-effect size, typically the **difference in mean methylation** between groups (often written Δβ or
-`meth.diff`), and a significance value; the sign of that difference encodes direction
-(hyper- versus hypo-methylation), a detail whose mishandling is the polarity bug of §3.6.
+This is not a purely theoretical concern. A benchmarking study comparing seven DMR-calling tools under simulated data found that method ranking by predictive accuracy changed with sequencing depth and with the magnitude of the underlying methylation difference, with some tools performing well only when differences were large and coverage was high [7]. A more recent benchmarking effort introduced an additional tool, DMRcate, and compared it against three established competitors on realistic simulations, again reporting meaningful differences in sensitivity and false-discovery control across methods rather than convergence on a single best approach [5]. Perhaps most directly relevant to the "trustworthiness" question this thesis is built around, a 2026 study applying two long-established, actively maintained pipelines (edgeR- and methylKit-based) to the *same* WGBS dataset found only around 56% concordance between the two tools at the level of individual differentially methylated cytosines, rising to roughly 90% once results were aggregated to genes — a useful reminder that even without any AI system in the loop, the choice of statistical pipeline materially shapes reported findings, and that per-cytosine and gene-level agreement can diverge substantially [4]. Reviews of newer, actively maintained pipelines make the same point explicitly: with methods available ranging from simple hypothesis tests to Bayesian smoothing frameworks, none has been shown to consistently outperform the others across benchmarks [6].
 
-**Why the statistics are hard.** Three features of WGBS counts complicate naïve testing. Coverage
-varies by orders of magnitude across sites, so equal weighting is wrong. Biological replicates are
-**overdispersed** — the variance between replicates exceeds what a simple binomial model predicts —
-so tests that ignore overdispersion produce anti-conservative p-values and inflated false-positive
-rates. And the sheer number of CpGs (tens of millions genome-wide) makes **multiple-testing
-correction** essential; methods control the false discovery rate (FDR) via Benjamini–Hochberg
-[@benjamini1995] or related procedures, reported as q-values. Calibrated control of false
-positives under these conditions remains a general concern whenever automated systems select
-analysis parameters, and it motivates the careful threshold documentation across the experimental
-chapters.
-
-**Two engines, two philosophies.** The field offers several tools [@robinson2014]; this work uses
-the two the agent routes between, which make opposite trade-offs.
-
-- **methylKit** performs direct, per-CpG tests — Fisher's exact test for two samples, or logistic
-  regression with optional overdispersion correction and covariates for replicated and paired
-  designs — and calls DMRs by tiling the genome into windows and testing each tile [@akalin2012].
-  It is fast, transparent, and well-powered when coverage and replicate counts are high.
-- **DSS** models the counts with a Bayesian beta-binomial hierarchy: it shrinks the dispersion
-  estimate across the genome and, for WGBS, **spatially smooths** methylation levels by borrowing
-  information from neighbouring CpGs, then tests for differential methylation and assembles DMRs
-  from the result [@feng2014; @wu2015; @park2016]. This recovers signal at low coverage or with few
-  replicates that per-CpG tests miss, at the cost of speed and of a smoothing assumption that must
-  not be double-applied (a guardrail noted in §3.4).
-
-The two are complementary rather than strictly ranked: methylKit is the natural choice in the
-high-power regime and DSS in the low-power regime, and at the boundary the defensible practice —
-encoded directly in the skill of §3.4 — is to run both and treat concordant calls as the confident
-ones. A spatial-smoothing alternative, **BSmooth**/`bsseq`, occupies the same low-power niche as
-DSS and supplies the smoothed-methylation tracks used for visualisation [@hansen2012]. The
-existence of several defensible methods, each with tunable thresholds, is the reason a single
-"ground truth" DMR count does not exist for a real dataset, and why the validation in Chapter 4
-scores gene-level recovery, direction, and qualitative signature rather than count identity.
+This body of work matters for the present thesis in two ways. First, it means that "the agent got the wrong answer" is frequently not a well-formed statement for WGBS differential-methylation analysis — the more honest question is whether the agent's answer falls within the range that domain-appropriate methods would themselves produce, and whether the agent can justify the specific choices (test family, replicate handling, coverage filtering) that led to its particular answer. Second, it directly motivates the evaluation strategy adopted later in this thesis: rather than scoring an agent purely against a single "gold" DMR set, Chapter 3 defines concordance relative to a small ensemble of established pipelines and, where available, the region set reported in the dataset's original publication, so that an agent's output can be judged for falling within (or outside) the envelope of results that a competent human analyst would consider defensible.
 
 ---
+
+## 2.3.2 Tool Multiplicity and the Reliability Problem in Epigenomics
+- [ ] başlık numaralarını güncelle/finalize task 🔼 📅 2026-08-10
+
+The lack of statistical consensus described above sits inside a broader reproducibility problem that affects computational epigenomics as a discipline. Bioinformatics pipelines are long chains of interdependent tools and parameter choices, and errors or biases introduced early — in quality trimming, in alignment, in normalisation — propagate through every downstream step; different normalisation and peak- or region-calling strategies applied to the same raw epigenomic data can therefore yield materially different biological interpretations even when every individual tool is used correctly [8]. This is compounded by the short half-life of bioinformatics software, incomplete documentation of workflow parameters, and inconsistent reporting practices, all of which are recognised contributors to a wider reproducibility crisis across computational biology [8]. Workflow-management systems such as Snakemake and Nextflow, and specialised reproducible WGBS pipelines such as ARPEGGIO for polyploid methylome comparisons or the FAIR-oriented DMRichR pipeline, have been developed precisely to fix a workflow's tools, versions, and parameters so that an analysis can be re-executed identically by a different investigator [13, 14, 15]. These systems solve reproducibility in the narrow, mechanical sense of *re-executability*: given the same pipeline definition and the same data, the same numbers come out. They do not, and are not designed to, resolve the deeper methodological disagreement described in Section 2.2 — a perfectly reproducible pipeline can still be reproducibly using a statistical model poorly suited to a given experimental design.
+
+This distinction — reproducibility of *execution* versus reliability of *method choice* — is central to how this thesis frames the risk and the opportunity posed by an autonomous agent. A rigid, version-pinned pipeline is reproducible but cannot adapt its method choice to an experimental design it was not built for (small sample sizes without replicates, unusual coverage profiles, non-CpG methylation contexts relevant to plant genomes). An agent that can read the structure of the input data and select, justify, and if necessary revise its statistical approach could in principle improve on this — but only if that flexibility does not come at the cost of the very reproducibility that fixed pipelines were built to guarantee. Measuring both properties at once, for the same system, is one of the central methodological aims of this thesis.
+
+---
+
+## 2.4 From Static Pipelines to Agentic Science
+
+Large language models capable of planning multi-step actions and executing code have given rise to a distinct research direction generally termed autonomous scientific research (ASR) or, within computational biology specifically, "agentic bioinformatics" [1, 9, 10]. The common thread across this literature is a move away from software that executes a single, human-specified pipeline and toward software that is given a high-level objective and a set of available tools, and that plans, executes, evaluates, and — in the more advanced systems — revises its own strategy.
+
+Early and still widely used systems in this space are single-agent: a standalone LLM-driven agent equipped with a broad tool set handles an entire analysis. AutoBA, for example, requires only a data path, a short data description, and a stated objective, and then autonomously proposes and executes a multi-omics analysis plan, including a self-repair mechanism for failed code [11]. Comparable single-agent tools have been built for single-cell RNA-seq analysis, biomarker discovery, and enzyme engineering, generally by pairing an LLM with a curated set of callable APIs or command-line tools [9, 10]. These systems establish that natural-language-driven, code-generating automation is feasible for real bioinformatics workloads, but recent surveys note recurring limitations: brittle handling of ambiguous instructions, heavy dependence on the quality of third-party tool documentation, inconsistent tool choices for ostensibly identical queries, and a persistent need for manual correction when the agent's single reasoning trajectory commits early to an unproductive analysis strategy [9].
+
+Multi-agent systems attempt to address this by distributing a task across specialised roles — a planner, one or more executor agents, and an evaluator or "critic" agent that checks outputs before they are accepted — an approach reported to improve robustness on tasks such as single-cell RNA-seq analysis (CellAgent), general bioinformatics pipelines with a dedicated debugging role (BioMaster), and protein design (ProtAgents) [9]. The Virtual Lab extends this pattern with an explicit human-in-the-loop principal-investigator agent coordinating a team of specialist agents, and reports a substantial real-world validation (engineered nanobody binders against SARS-CoV-2 variants), while also documenting that the system requires repeated human-guided refinement and is sensitive to prompt ambiguity [9]. Across this literature, a broadly shared conclusion is that specialisation into multiple roles improves handling of complex, multi-step tasks relative to single agents, but that fixed, hand-designed coordination structures still struggle when a task's requirements deviate from what the designer anticipated [1, 9] — precisely the architectural rigidity that motivates *evolving* multi-agent frameworks such as Mimosa (Section 2.5).
+
+Notably absent from this landscape, as far as the present survey of the literature has established, is any agentic system purpose-built for — or systematically evaluated on — differential methylation analysis from WGBS data specifically. Existing AI applications to DNA methylation are overwhelmingly supervised prediction models: deep-learning and machine-learning classifiers trained to predict methylation status, CpG-island behaviour, or disease association from sequence or array features, rather than autonomous agents that plan and execute an analysis pipeline end to end [12]. This absence is one of the concrete gaps this thesis addresses.
+
+---
+## 2.5 The Mimosa Framework
+
+Mimosa is an open-source, evolving multi-agent framework for autonomous scientific research introduced by Legrand, Jiang, and colleagues, designed to address two limitations the authors identify in prior ASR systems: degraded long-horizon reasoning as LLM context accumulates ("semantic drift"), and the architectural rigidity of fixed multi-agent coordination protocols that cannot reconfigure when tools change, objectives are revised, or intermediate results suggest a different analytical path [1]. Mimosa is organised into five layers: an optional planning layer that decomposes a high-level research goal into discrete tasks; a tool-discovery layer, built on the Model Context Protocol (MCP) and a companion tool-management platform called Toolomics, which scans for available computational tools exposed as MCP servers; a meta-orchestration layer that either retrieves and mutates a previously archived workflow for a sufficiently similar task, or synthesises a new one from scratch, encoding the result as a directed-acyclic-graph workflow of specialised agents; an execution layer in which each agent is a SmolAgent code-generating agent that writes and runs Python to invoke tools and scientific libraries directly, rather than emitting schema-constrained tool calls; and an evaluation layer in which an LLM-as-a-judge scores each completed execution along four criteria — goal alignment, inter-agent collaboration, output quality, and answer plausibility — and returns structured, evidence-citing feedback that the meta-orchestrator uses to propose the next workflow mutation [1].
+
+The refinement procedure itself is a bounded, single-incumbent local search: at each iteration the best workflow observed so far is mutated by a single structural or prompt-level edit (adding or removing an agent, rewiring which agent receives which predecessor's output, or rewriting a prompt), the mutated workflow is executed and scored, and it replaces the incumbent only if its score improves; the loop terminates after a fixed number of iterations or once the judge score exceeds a preset threshold [1]. Evaluated on ScienceAgentBench — 102 data-driven discovery tasks spanning bioinformatics, computational chemistry, geographic information science, and psychology, each with a programmatic, ground-truth evaluation script independent of the internal judge — Mimosa achieved a 43.1% Success Rate using DeepSeek-V3.2 as the execution model, exceeding both a single-agent baseline (38.2%) and a one-shot (non-iterative) multi-agent configuration (32.4%) with the same underlying model [1]. Critically for the present thesis, the authors report that this benefit is not universal: GPT-4o and Claude Haiku 4.5 showed large single-agent-to-multi-agent gains but only modest or even slightly negative additional gains from iterative refinement, leading the authors to conclude that the value of workflow evolution is contingent on the underlying execution model's instruction-following robustness rather than a guaranteed property of the architecture [1]. They also report that their case-based workflow-retrieval mechanism, though fully implemented, was never actually exercised during the ScienceAgentBench evaluation because no two tasks in that benchmark were similar enough to trigger it — meaning every reported result reflects workflow synthesis *de novo*, with retrieval-and-adaptation left as future work [1].
+
+Two further design choices make Mimosa a suitable starting point for this thesis. First, its tool-agnostic MCP integration means that extending it with a WGBS-specific toolchain (Bismark, methylation extractors, DMR-calling packages, annotation libraries) requires registering new containerised MCP servers rather than modifying Mimosa's core orchestration logic [1]. Second, its emphasis on fully logged, archived execution traces — intended by its authors to support auditability and eventual replication of computational analyses — is directly what RQ5 of this thesis sets out to test empirically: whether that logged trace is, in practice, legible enough for a domain expert to diagnose a wrong or borderline analysis, rather than merely documenting that one occurred [1].
+
+
+---
+
+## 2.7 Gap and Positioning of This Thesis
+
+Three threads converge into the gap this thesis addresses. First, differential-methylation analysis from WGBS data is a mature, well-benchmarked, but genuinely unsettled statistical problem: published tools disagree with one another even in expert hands, which means any evaluation of an automated system must be built around concordance with a defensible range of outcomes rather than a single ground truth. Second, computational epigenomics already has a documented reproducibility problem driven by pipeline and parameter heterogeneity, which existing workflow-management and pipeline-standardisation tools address only at the level of re-executability, not method appropriateness. Third, agentic AI systems for bioinformatics — including general-purpose ASR frameworks such as Mimosa and domain-specific systems such as AutoBA, CellAgent, and BioMaster — have been built and benchmarked extensively for other data types, but, as far as the literature surveyed here shows, none has been purpose-adapted or systematically evaluated for WGBS differential-methylation analysis, and existing AI-for-methylation work is overwhelmingly supervised prediction rather than autonomous pipeline execution.
+
+This thesis sits at the intersection of these three threads. It adapts Mimosa — chosen specifically for its dynamic tool discovery, its judge-driven iterative refinement, and its emphasis on archived, auditable execution traces — to a domain where "correct" is already a matter of statistical judgement even for human experts, and asks whether an evolving multi-agent system can be shown, empirically and against real benchmarks of concordance and consistency rather than a single internal score, to perform this kind of analysis in a way a domain expert could actually trust.
+
+
+
+## References
+
+*(Numbering matches the bracketed citations above; format to your department's required style before submission.)*
+
+1. Legrand, M., Jiang, T., Feraud, M., Navet, B., Taghzouti, Y., Gandon, F., Dumont, E., & Nothias, L.-F. (2026). *Mimosa Framework: Toward Evolving Multi-Agent Systems for Scientific Research*. arXiv:2603.28986 [cs.AI].
+2. Shafi, A., Mitrea, C., Nguyen, T., & Draghici, S. (2018). A survey of the approaches for identifying differential methylation using bisulfite sequencing data. *Briefings in Bioinformatics*, 19(5), 737–753. https://doi.org/10.1093/bib/bbx013
+3. Dolzhenko, E., & Smith, A. D. [tool: RADMeth] Using beta-binomial regression for high-precision differential methylation analysis in multifactor whole-genome bisulfite sequencing experiments. *BMC Bioinformatics*, 15, 215 (2014). *(verify authorship before citing — retrieved via secondary source; check primary record.)*
+4. Benchmarking edgeR and methylKit for the Detection of Differential DNA Methylation: A Methodological Evaluation. *International Journal of Molecular Sciences*, 27(4), 1964 (2026). https://doi.org/10.3390/ijms27041964
+5. Calling differentially methylated regions from whole genome bisulphite sequencing with DMRcate. *Nucleic Acids Research*, 49(19), e109 (2021).
+6. FAIRification of the DMRichR pipeline: advancing epigenetic research on environmental and evolutionary model organisms. *Bioinformatics Advances*, 5(1), vbaf024 (2025).
+7. A comprehensive evaluation of computational tools to identify differential methylation regions using RRBS data. *Genomics* (2020). https://doi.org/10.1016/j.ygeno.2020.07.032
+8. Integrative Epigenomics: Bioinformatics (preprint review). *Preprints.org* (2026).
+9. Zhou, J., Jiang, J., Han, Z., Wang, Z., & Gao, X. (2025). Streamline automated biomedical discoveries with agentic bioinformatics. *Briefings in Bioinformatics*, 26(5), bbaf505. https://doi.org/10.1093/bib/bbaf505
+10. Huang, S., Lang, M., Chen, Z., Yang, C., Huang, X., et al. (2026). From foundation models to autonomous agents in biology. *Genomics Communications*, 3, e006. https://doi.org/10.48130/gcomm-0026-0005
+11. Zhou, J., Zhang, B., Li, G., et al. (2024). An AI agent for fully automated multi-omic analyses. *Advanced Science*, 11, e2407094. https://doi.org/10.1002/advs.202407094
+12. Artificial intelligence for comprehensive DNA methylation analysis: overview, challenges, and future directions. *Briefings in Bioinformatics*, 26(5), bbaf468 (2025).
+13. Wratten, L., Wilm, A., & Göke, J. (2021). Reproducible, scalable, and shareable analysis pipelines with bioinformatics workflow managers. *Nature Methods*, 18, 1161–1168. https://doi.org/10.1038/s41592-021-01254-9
+14. ARPEGGIO: Automated Reproducible Polyploid EpiGenetic GuIdance workflOw. *bioRxiv* 2020.07.16.206193 (2020).
+15. FAIRification of the DMRichR pipeline [see also ref. 6].
+16. Chen, Z., Chen, S., Ning, Y., Zhang, Q., Wang, B., Yu, B., Li, Y., Liao, Z., Wei, C., Lu, Z., Dey, V., Xue, M., Baker, F. N., Burns, B., Adu-Ampratwum, D., Huang, X., Ning, X., Gao, S., Su, Y., & Sun, H. (2025). ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery. *arXiv preprint*.
+17. Mitchener, L., Laurent, J. M., Tenmann, B., Narayanan, S., Wellawatte, G. P., White, A., Sani, L., & Rodriques, S. G. (2025). BixBench: a Comprehensive Benchmark for LLM-based Agents in Computational Biology. *arXiv preprint* arXiv:2503.00096.
+
+*Notes for revision: (i) reference 3 needs its primary bibliographic record confirmed directly (author list was not fully visible in the source used during drafting); (ii) references 5, 6, 7, 8, and 12 are given with journal/volume/year only because author bylines were not captured during drafting — pull the full author lists from the DOIs before your bibliography is finalised; (iii) references 16–17 are reproduced from Mimosa's own bibliography and should be independently verified against arXiv/publisher records; (iv) consider whether your department wants numeric (Vancouver/IEEE) or author–date (APA/Harvard) style — this draft uses numeric throughout for consistency with the Mimosa paper, but bioinformatics theses often expect author–date.*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Eskiden kalanlar
+- [ ] background knowledge'da bu altta kalanları oku, ekleyebildiklerini yukarı ekle, gerisini sil task⏫ 📅 2026-07-19 
+
+
 
 ## 2.4 Large language model agents, tool use, and the Model Context Protocol
 
