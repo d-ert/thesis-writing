@@ -12,12 +12,10 @@ longform:
     - 05_experiment2_gse214232
     - 06_experiment3_simulated_fastq
     - 07_discussion
-    - 08_bibliography
     - 08_conclusions
     - 09_bibliography
     - 10_annexes
     - OUTLINE
-    - Thesis
   ignoredFiles:
     - manuscript
     - 001_introduction
