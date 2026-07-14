@@ -39,3 +39,5 @@ This workstream covers the thesis, Mimosa validation, Toolomics methylation tool
 - [[References MOC|References MOC]]
 - [[WGBS benchmarking|WGBS benchmarking]]
 
+
+![[Poster_draft.png|1355]]

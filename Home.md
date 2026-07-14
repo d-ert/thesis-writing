@@ -3,23 +3,7 @@ cssclasses:
   - dashboard-home
 ---
 
-<div class="dash-hero">
-<div class="dash-ribbon"></div>
 
-```dataviewjs
-const now = new Date();
-const h = now.getHours();
-const greeting = h < 5 ? "Still up" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : h < 22 ? "Good evening" : "Still up";
-const dateStr = moment().format("dddd, MMMM D, YYYY");
-
-dv.container.innerHTML = `
-  <div class="dash-eyebrow">ACADEMY <span class="dash-eyebrow-dot">·</span> RESEARCH VAULT</div>
-  <h1 class="dash-title">${greeting}.</h1>
-  <div class="dash-subtitle">${dateStr}</div>
-`;
-```
-
-</div>
 
 ```dataviewjs
 // ── Vault stats ────────────────────────────────────────────────
@@ -67,7 +51,7 @@ dv.container.innerHTML = `
   </div>
 `;
 ```
-</div>
+
 <div class="dash-col">
 <div class="panel">
 <h3 class="panel-title"><span class="panel-icon">&#129504;</span> Quick navigation</h3>
@@ -286,29 +270,3 @@ dv.container.innerHTML = `
 `;
 ```
 
-</div>
-</div>
-
-
-
-```dataviewjs
-// ── Footer ────────────────────────────────────────────────────────
-const tips = [
-  "Commit your vault before a big edit \u2014 obsidian-git has your back.",
-  "Re-run FDR correction whenever you add new DMR calls before trusting a p-value.",
-  "A cluttered outline is a research idea in disguise \u2014 park it in Scratch.md.",
-  "Cite as you write. Future you will not remember which paper that number came from.",
-  "Benchmark early, benchmark often \u2014 regressions hide quietly in pipelines.",
-  "Write the hard paragraph first. Everything after it is easier.",
-  "Back up before you refactor Epykit's core functions.",
-  "A finished draft beats a perfect outline.",
-];
-const tip = tips[dv.date("today").ordinal % tips.length];
-
-dv.container.innerHTML = `
-  <div class="dash-footer">
-    <span class="footer-tip">${tip}</span>
-    <span class="footer-meta">Academy &middot; Obsidian research vault</span>
-  </div>
-`;
-```
