@@ -1,0 +1,78 @@
+name: Deploy Thesis Site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # allow manual trigger
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install MkDocs & dependencies
+        run: |
+          pip install \
+            mkdocs-material \
+            pymdown-extensions
+
+      - name: Prepare docs directory
+        run: |
+          # MkDocs needs docs_dir separate from config dir.
+          # Create a docs/ directory that mirrors the vault content
+          # (excluding build artifacts and Obsidian internals).
+          mkdir -p docs/_assets
+          
+          # Copy all markdown files preserving directory structure
+          find . -name '*.md' \
+            -not -path './.git/*' \
+            -not -path './.obsidian/*' \
+            -not -path './.smart-env/*' \
+            -not -path './.dashboard-backup/*' \
+            -not -path './.github/*' \
+            -not -path './docs/*' \
+            -not -path './_site/*' \
+            -not -path './hooks/*' \
+            -not -path './node_modules/*' \
+            -exec sh -c 'mkdir -p "docs/$(dirname "{}")" && cp "{}" "docs/{}"' \;
+          
+          # Copy the extra CSS
+          cp hooks/extra.css docs/_assets/extra.css
+          
+          echo "=== docs/ tree ==="
+          find docs -name '*.md' | head -40 | sort
+
+      - name: Build site
+        run: mkdocs build --site-dir _site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,144 @@
+site_name: "Mimosa Thesis"
+site_description: "Mimosa: A Reliable, Tool-Augmented LLM Agent for Reproducible DNA-Methylation Analysis"
+site_url: https://d-ert.github.io/thesis-writing/
+repo_url: https://github.com/d-ert/thesis-writing
+repo_name: d-ert/thesis-writing
+edit_uri: edit/main/
+
+docs_dir: docs
+site_dir: _site
+
+# ── Navigation ──────────────────────────────────────────────────────
+nav:
+  - Home: index.md
+  - Thesis:
+    - Outline & Progress: Thesis/Thesis_v2/OUTLINE.md
+    - "1 — Introduction": Thesis/Thesis_v2/01_introduction.md
+    - "2 — Background & Related Work": Thesis/Thesis_v2/02_background.md
+    - "3 — System Design & Methods": Thesis/Thesis_v2/03_system_design_and_methods.md
+    - "4 — Experiment 1: GSE263850": Thesis/Thesis_v2/04_experiment1_gse263850.md
+    - "5 — Experiment 2: GSE214232": Thesis/Thesis_v2/05_experiment2_gse214232.md
+    - "6 — Experiment 3: Simulated FASTQ": Thesis/Thesis_v2/06_experiment3_simulated_fastq.md
+    - "7 — Discussion": Thesis/Thesis_v2/07_discussion.md
+    - "8 — Conclusions & Future Work": Thesis/Thesis_v2/08_conclusions.md
+    - Bibliography: Thesis/Thesis_v2/09_bibliography.md
+    - Annexes: Thesis/Thesis_v2/10_annexes.md
+    - "Full Thesis (single page)": Thesis/Thesis_v2/Thesis.md
+  - Working Notes:
+    - Thesis MOC: Thesis/Thesis MOC.md
+    - Study C Method: Thesis/Study C Method.md
+    - Run Comparison: Thesis/run_comparison_report.md
+    - Run23 Evolution: Thesis/Run23 evolution analysis.md
+    - Study C Results: Thesis/studyC/Results.md
+    - WGBS Benchmarking: WGBS benchmarking.md
+  - Epykit:
+    - Epykit MOC: Epykit/Epykit MOC.md
+    - README: Epykit/epykit_README.md
+    - Benchmark Results: Epykit/Benchmark Results.md
+    - FDR Analysis: Epykit/fdr_analysis.md
+    - Study 1 vs Study 2: Epykit/study1_vs_study2.md
+    - TODO: Epykit/epykit_todo.md
+  - References:
+    - Overview: References/References MOC.md
+  - TODO: TODO.md
+
+# ── Theme ───────────────────────────────────────────────────────────
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.action.edit
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+
+# ── Markdown extensions ─────────────────────────────────────────────
+markdown_extensions:
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - tables
+  - footnotes
+  - attr_list
+  - def_list
+  - md_in_html
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.mark
+  - pymdownx.critic
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.arithmatex:
+      generic: true
+
+# ── Plugins ─────────────────────────────────────────────────────────
+plugins:
+  - search
+  - offline:
+      enabled: false
+
+# ── Hooks (strip Obsidian syntax) ───────────────────────────────────
+hooks:
+  - hooks/obsidian.py
+
+# ── Extra ───────────────────────────────────────────────────────────
+extra:
+  generator: false
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - _assets/extra.css
+
+# ── Validation (suppress warnings for vault files not in nav) ───────
+validation:
+  nav:
+    not_found: warn
+    omitted_files: info
+    absolute_links: info
+  links:
+    not_found: info
+    absolute_links: info
+    unrecognized_links: info
+
+not_in_nav: |
+  **/*.md

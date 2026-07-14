@@ -1,3 +1,5 @@
 .dashboard-backup/
 .obsidian/
 .smart-env/
+_site/
+docs/
