@@ -200,7 +200,7 @@ unsupported claims [@ji2023] — and an agent that wraps an LLM inherits these f
 adding new ones: silent tool failures, irreproducible run-to-run behaviour, and self-reported
 successes that do not survive inspection. In a scientific setting these are disqualifying unless
 measured and controlled, because a plausible-looking wrong answer is worse than an obvious one. The
-concrete failures documented in §3.6 — the same input yielding results that differ by orders of
+concrete failures documented in  — the same input yielding results that differ by orders of
 magnitude, an impossible region count carried into a biological conclusion — are precisely this
 problem in the methylation domain.
 

@@ -8,6 +8,9 @@ tags:
 
 This workstream covers the thesis, Mimosa validation, Toolomics methylation tooling, and run-analysis notes.
 
+> [!UPDATING IMPORTANT]
+> For places that needs updating check the "update" tags
+
 ## Thesis Draft
 
 - [[Thesis/Thesis_v1/Index|Thesis v1 index]]

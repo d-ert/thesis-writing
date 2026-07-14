@@ -89,7 +89,6 @@ Follows the eight UniBO-required elements. Each maps to a subsection:
 - **§3.3** MCP Server B — Dockerised R methylKit/DSS runner (execute-only surface).
 - **§3.4** The methylation skill — engine selection, QC defaults, domain knowledge encoding.
 - **§3.5** The Mimosa agent — framework, QD evolution, multi-source verifier, goal evolution.
-- **§3.6** Reliability engineering — sign canonicalisation, post-hoc assertions, instrumentation.
 - **§3.7** Toolomics ecosystem — Perspicacité, Indicium, the multi-omics bridge.
 
 ## Chapter 4 — Experiment 1: Replication of the GSE263850 AKAP11 Study

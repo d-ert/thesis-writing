@@ -74,7 +74,7 @@ This is the step that determines whether Study C is testing "DSS in the abstract
 
 ## 4. Score against ground truth — this is where H2 gets its numbers
 
-WGBSSuite ships scoring functions you can reuse or reimplement inside your own shared scoring library (per your OUTLINE §3.6 plan):
+WGBSSuite ships scoring functions you can reuse or reimplement inside your own shared scoring library:
 
 - `extract_DMR_phase()` — turns the true per-CpG state vector into (a) a presence/absence array (`0011100...`, 1 = truly differentially methylated) and (b) a list of true DMR boundary intervals.
 - `score_overlap()` — per-base confusion matrix (TP/FP/FN/TN) against a predicted call vector at a given cutoff, returning sensitivity and specificity directly.
