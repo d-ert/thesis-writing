@@ -6,14 +6,14 @@
 > an overall verdict is held open until both studies and the synthetic/reliability results of
 > Chapter 5 are in hand.
 
-This chapter presents the first test of the hypothesis stated in §1.3: whether the agent, given
+This chapter presents the first test of the hypothesis stated in §1.3: whether Mimosa, given
 the identical input data of a peer-reviewed WGBS study, recovers its principal findings —
 differentially methylated regions, affected genes, and direction of effect — to a degree
 comparable with an expert re-analysis of the same data. Two studies are reported: **Study A**,
 a human heterozygous *AKAP11* knockout, and **Study B**, a mouse *Dnmt3a* conditional
-knockout. Each is scored as a triangle — agent versus published results, agent versus an expert
+knockout. Each is scored as a triangle — Mimosa versus published results, Mimosa versus an expert
 re-analysis run ourselves (the *baseline*), and baseline versus published — so that the
-expert-versus-published agreement serves as the realistic ceiling against which the agent is
+expert-versus-published agreement serves as the realistic ceiling against which Mimosa is
 measured.
 
 The chapter is structured per study. For each, we describe the dataset, the three arms (paper,
@@ -69,7 +69,7 @@ analyst with the explicit goal of replicating the published analysis faithfully.
 - ChIPseeker annotation with a ±100 kb TSS window,
 - ReactomePA pathway enrichment with an explicit gene universe.
 
-**Arm 3 — Agent pipeline (run23_goal5_learn).** The Mimosa agent, given a natural-language goal
+**Arm 3 — Mimosa pipeline (run23_goal5_learn).** Mimosa was given a natural-language goal
 ("run a complete DSS differential methylation analysis of the AKAP11 KO dataset, annotate and
 enrich, then compare to the baseline and report") and a config-driven workspace. It operated
 under Goal 5 (full cycle with learning) with Quality-Diversity evolution. The pipeline it
@@ -108,16 +108,16 @@ Table 4.1 summarises the DMR-level output of each arm.
 
 The baseline produces 921 DMRs — a 13% overshoot of the paper's 813, within the range of
 variation expected from minor implementation differences (e.g. Bioconductor version, exact
-coverage at boundary CpGs). The agent produces 4,812 DMRs — a 5.9× overshoot. This inflation
+coverage at boundary CpGs). Mimosa produces 4,812 DMRs — a 5.9× overshoot. This inflation
 is the chapter's first major finding and is traced to specific parameter differences in
 §4.1.4.
 
 ### 4.1.4 Parameter analysis — the sources of divergence
 
-Table 4.2 catalogues the parameter differences between the baseline and the agent, alongside
+Table 4.2 catalogues the parameter differences between the baseline and Mimosa, alongside
 their impact.
 
-**Table 4.2.** Critical parameter differences between the baseline and agent pipelines.
+**Table 4.2.** Critical parameter differences between the baseline and Mimosa pipelines.
 
 | Parameter | Baseline (paper values) | Agent (run23) | Impact |
 |---|---|---|---|
@@ -131,24 +131,24 @@ their impact.
 | `pct.sig` | 0.5 | 0.5 | Identical |
 
 The single most consequential difference is the `p.threshold` mismatch. DSS's `callDMR()`
-function expects a raw per-CpG *p*-value threshold; the agent pipeline passes its configured
+function expects a raw per-CpG *p*-value threshold; the Mimosa pipeline passes its configured
 FDR cutoff (0.05) into this slot. This makes the per-CpG inclusion criterion approximately
 5,000 times more permissive than the paper's `1e-5`, which is the primary driver of the DMR
-count inflation. The agent's stricter effect-size filter (`delta = 0.25` versus `delta = 0`)
+count inflation. Mimosa's stricter effect-size filter (`delta = 0.25` versus `delta = 0`)
 partially offsets this by rejecting small-effect CpGs, but clearly does not compensate for the
 p-value looseness. The `dis.merge = 1000` setting further inflates counts by merging CpGs up to
 10× farther apart into single regions.
 
-This is a semantic mismatch — the agent treated a conceptually correct FDR threshold as if it
+This is a semantic mismatch — Mimosa treated a conceptually correct FDR threshold as if it
 were a raw *p*-value — and is precisely the kind of "plausible wrong answer" described in §1.4.
-Its detection required the triangulated comparison design: within the agent's output alone, the
+Its detection required the triangulated comparison design: within Mimosa's output alone, the
 4,812 DMRs are internally consistent and pass the pipeline's own validation, and only the
 juxtaposition with the baseline and the paper reveals the inflation. This observation is
 returned to in §6 (Discussion).
 
 ### 4.1.5 Direction labeling — a systematic inversion
 
-Among the 791 overlapping DMR pairs between the baseline and agent output, the direction of
+Among the 791 overlapping DMR pairs between the baseline and Mimosa's output, the direction of
 effect is **100% inverted**, with zero exceptions:
 
 **Table 4.3.** Direction concordance for overlapping DMR pairs.
@@ -162,7 +162,7 @@ effect is **100% inverted**, with zero exceptions:
 
 This is not biological discordance but a labeling convention difference. The baseline's
 `DMLfit.multiFactor()` computes coefficients as *treatment − control* (KO − WT), so a positive
-`areaStat` indicates higher methylation in the KO — hypermethylation. The agent's `DMLtest()`
+`areaStat` indicates higher methylation in the KO — hypermethylation. Mimosa's `DMLtest()`
 was called as `DMLtest(group1 = ctrl, group2 = treat)`, so its `diff.Methy` represents
 *control − treatment* (WT − KO) — flipping the sign. The 100% inversion confirms the two
 pipelines agree on the biology for every shared region; the labels are simply opposite.
@@ -182,18 +182,18 @@ pipelines identify the same genomic loci as differentially methylated.
 
 | Comparison | Result |
 |---|---|
-| Baseline DMRs recovered by agent | **791 / 921 (85.9%)** |
-| Agent DMRs supported by baseline | 764 / 4,812 (15.9%) |
-| Agent-only DMRs (no baseline match) | 4,048 (84.1%) |
+| Baseline DMRs recovered by Mimosa | **791 / 921 (85.9%)** |
+| Mimosa DMRs supported by baseline | 764 / 4,812 (15.9%) |
+| Mimosa-only DMRs (no baseline match) | 4,048 (84.1%) |
 
 The asymmetry is the expected consequence of the call-set size difference: the baseline's
-smaller, higher-confidence set is almost entirely (86%) recovered within the agent's larger set,
+smaller, higher-confidence set is almost entirely (86%) recovered within Mimosa's larger set,
 while the reverse is naturally much lower. This pattern — high recall, low precision relative
 to the baseline — is the signature of a permissive threshold.
 
-More informatively, the quality of the agent's calls correlates with their corroboration:
+More informatively, the quality of Mimosa's calls correlates with their corroboration:
 
-**Table 4.5.** Properties of agent DMRs that overlap vs. do not overlap the baseline.
+**Table 4.5.** Properties of Mimosa DMRs that overlap vs. do not overlap the baseline.
 
 | Property | Overlapping (n = 764) | Non-overlapping (n = 4,048) |
 |---|---:|---:|
@@ -202,10 +202,10 @@ More informatively, the quality of the agent's calls correlates with their corro
 | Median region length | 372 bp | 274 bp |
 | Median baseline overlap | 78% | — |
 
-The agent's **strongest calls** — those with the largest effect sizes, most CpGs, and broadest
-regions — are disproportionately the ones confirmed by the baseline. This indicates that the
-agent's internal ranking of its calls is sound; the problem is the threshold at which the list
-is cut, not the ranking above it.
+Mimosa's **strongest calls** — those with the largest effect sizes, most CpGs, and broadest
+regions — are disproportionately the ones confirmed by the baseline. This indicates that
+Mimosa's internal ranking of its calls is sound; the problem is the threshold at which the
+list is cut, not the ranking above it.
 
 ### 4.1.7 Gene recovery and biological concordance
 
@@ -233,11 +233,11 @@ genes that a direct-overlap annotation would not capture, and these two genes ma
 gap. That neither arm finds them suggests the ceiling for gene recovery under direct-overlap
 annotation is below 100%, which sets an honest upper bound for the agent comparison.
 
-Second, the agent's enrichment step (`04_enrichment.R`) independently re-computes DMR–gene
+Second, Mimosa's enrichment step (`04_enrichment.R`) independently re-computes DMR–gene
 overlaps and *does* recover key genes like *IRX2*, *NR2E1*, *CCDC177*, and *DMRTA2* — but
 because the `gene_name` column in the annotated DMR output is empty for all 4,812 rows (a
 confirmed annotation bug — see §4.1.9), these genes cannot be traced back to specific DMR
-coordinates without re-running the annotation step. This reduces the utility of the agent's
+coordinates without re-running the annotation step. This reduces the utility of Mimosa's
 output for gene-level biological interpretation.
 
 ### 4.1.8 Enrichment concordance — biological pathways
@@ -265,25 +265,25 @@ bipolar disorder and schizophrenia. The enrichment concordance is arguably the m
 of agreement between the arms, because pathway-level results are buffered against individual
 gene-level differences by the aggregation inherent in enrichment analysis.
 
-Two caveats apply. First, the agent's enrichment used the default gene universe (all annotated
+Two caveats apply. First, Mimosa's enrichment used the default gene universe (all annotated
 genes) rather than an explicit universe of genes tested, which inflates enrichment significance
-(a known over-representation analysis pitfall). Second, the agent's gene set is derived from
+(a known over-representation analysis pitfall). Second, Mimosa's gene set is derived from
 19,525 overlapping RefSeq transcripts rather than the 705 genes in the paper, so the
 denominator is very different; the fact that the top terms still converge on neural/developmental
 biology is meaningful precisely because it survives this inflation.
 
 ### 4.1.9 Identified agent defects
 
-Three specific defects in the agent's pipeline were identified through the comparison:
+Three specific defects in Mimosa's pipeline were identified through the comparison:
 
-**Defect 1: p.threshold / FDR mismatch (severity: high).** As detailed in §4.1.4, the agent
+**Defect 1: p.threshold / FDR mismatch (severity: high).** As detailed in §4.1.4, Mimosa
 feeds an FDR cutoff (0.05) into DSS's `callDMR(p.threshold = ...)`, which expects a raw
 per-CpG *p*-value. This is the primary cause of the 5× DMR inflation.
 
-**Defect 2: Direction inversion (severity: medium).** The agent's `DMLtest()` group-order
+**Defect 2: Direction inversion (severity: medium).** Mimosa's `DMLtest()` group-order
 convention produces `diff.Methy` with opposite sign from the baseline (§4.1.5). While
 internally consistent, any biological conclusion about hyper- versus hypomethylation drawn
-directly from the agent's labels would be backwards.
+directly from Mimosa's labels would be backwards.
 
 **Defect 3: Empty gene_name column (severity: medium).** In `03_annotate.R`, the `gene_name`
 vectors are initialised to empty strings and never assigned gene symbols after annotation.
@@ -315,11 +315,11 @@ The distribution of DMRs across genomic compartments is broadly similar between 
 
 The agent's higher intergenic share (35.6% vs. 21.9%) is consistent with permissive calling
 picking up weaker signals in regions far from annotated genes. The proportional similarity
-across the remaining categories indicates that the extra agent DMRs are spread across all
+across the remaining categories indicates that the extra Mimosa DMRs are spread across all
 genomic compartments rather than concentrated in one anomalous category — there is no evidence
 of a systematic annotation artefact.
 
-Chromosomal distribution is likewise broadly concordant, with two notable deviations: the agent
+Chromosomal distribution is likewise broadly concordant, with two notable deviations: Mimosa
 calls 2× the relative share of chrX DMRs (3.4% vs. 1.5%) and identifies 8 chrY DMRs where the
 baseline finds none. Both are consistent with a permissive threshold lowering the bar
 everywhere, including on sex chromosomes where sample size is effectively halved (all samples
@@ -369,7 +369,7 @@ Table 4.8 brings together the comparison across all evaluated dimensions.
 | **Silent defects** | None identified | 3 (p-threshold, direction, gene_name) | — |
 
 The baseline achieves close fidelity to the paper (within 13% on DMR count, correct direction,
-same key genes). The agent recovers the biological signal — 86% of the baseline's DMRs, the
+same key genes). Mimosa recovers the biological signal — 86% of the baseline's DMRs, the
 same pathway themes, and the same key genes through its enrichment step — but does so at the
 cost of a 5.9× inflated call set, inverted direction labels, and a broken gene-annotation
 column. Its engineering qualities — modular scripts, config-driven parameters, OOM protection,
@@ -422,25 +422,25 @@ To be completed.
 
 Study A provides a mixed but informative answer to **H1 (concordance)**. On the positive side:
 
-- The agent pipeline recovers **86% of the baseline's DMR set** positionally, and its
+- Mimosa's pipeline recovers **86% of the baseline's DMR set** positionally, and its
   strongest calls are the ones most corroborated by the expert analysis — the ranking is sound.
-- The agent converges on the **same neural/developmental biological pathways** as both the
+- Mimosa converges on the **same neural/developmental biological pathways** as both the
   paper and the baseline, even through different enrichment frameworks and gene sets.
 - Key published genes (*IRX2*, *OTX1*, *NR2E1*, *DMRTA2*) are independently rediscovered by
-  the agent's enrichment step.
+  Mimosa's enrichment step.
 - Run23 is a **substantial improvement** over all prior agentic runs (15–20), being the first
   to complete the full cycle without crashes, OOM failures, or simulated-data fallbacks.
 
 On the negative side:
 
-- The agent produces a **5.9× inflated DMR call set**, driven by a semantic parameter mismatch
+- Mimosa produces a **5.9× inflated DMR call set**, driven by a semantic parameter mismatch
   that would not have been caught without external comparison.
 - Three **silent defects** — all internally consistent, all passing the pipeline's own
   validation — would produce misleading biological conclusions if taken at face value.
 - Gene-level annotation is **broken**, reducing the output's utility for downstream
   interpretation.
 
-The honest conclusion for Study A is that the agent demonstrates genuine *capability* — it
+The honest conclusion for Study A is that Mimosa demonstrates genuine *capability* — it
 finds the signal, ranks it correctly, and converges on the right biology — but not yet
 *reliability*: the three silent defects mean the output cannot be used directly for biological
 interpretation without expert review. Whether the skill and tool guardrails described in §3.4
