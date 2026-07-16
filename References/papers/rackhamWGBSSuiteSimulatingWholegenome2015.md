@@ -39,7 +39,7 @@ related: []
 ## 🧠 Synthesis & Thoughts
 *(This is where you synthesize how this relates to your work. Does it support your methodology? Does it contradict a previous paper?)*
 
-- **Relevance**:: used in studyC to analyze and simulate the gse50 data to create a truth set so we can compare AUC etc
+- **Relevance**:: NOT USED ANYMORE IN V2 !!! used in studyC to analyze and simulate the gse50 data to create a truth set so we can compare AUC etc
 - **Methodology**:: 
 - **Key Findings**::  
 
