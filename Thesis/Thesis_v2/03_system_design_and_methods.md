@@ -147,6 +147,9 @@ This is the system's principal honesty boundary, and it is stated here, at the d
 
 ## 3.3 MCP Server B — the Dockerised R methylKit/DSS runner
 
+- [ ] burda şey eklesek mi eğer kullanıcı çok emin olmak isterse iki paketi de kullanır ve overlaplere bakar iki pakette olanı alır falan. Biraz method olayı vr diğer paperlarda çok yok ama idk task🔼 📅 2026-07-19 
+
+
 Server B is the system's downstream engine: it takes Bismark coverage files and carries them through differential-methylation analysis to annotated, interpreted regions. It addresses a concrete deployment constraint: Mimosa's own execution sandbox installs only Python packages, so the R/Bioconductor stack that the canonical methylation pipeline requires — methylKit, DSS, genomation, and their dependencies — cannot be installed in the agent's local environment, and any analysis script the agent writes would fail at `library(methylKit)`. Server B resolves this by shipping that stack as a service: a Docker image built on **`bioconductor/bioconductor_docker:RELEASE_3_19`** (Bioconductor 3.19) with methylKit, DSS, bsseq, genomation, GenomicRanges, matrixStats, `data.table` (pinned to 1.15.4), dplyr, ggplot2, clusterProfiler, the `org.Hs.eg.db`/`org.Mm.eg.db` annotation databases, and supporting packages pre-installed, plus pre-built UCSC annotation tracks for hg38 and mm10. The agent executes its R code inside this container over MCP and thereby inherits a fixed, reproducible analysis environment.
 
 ### 3.3.1 Two altitudes of tools — and the one used here
