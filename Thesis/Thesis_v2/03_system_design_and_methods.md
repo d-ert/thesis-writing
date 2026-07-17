@@ -88,6 +88,9 @@ The agent and the servers do not pass large objects to one another in messages. 
 
 ### 3.1.4 Design principles
 
+- [ ] burayı baya sil ya çok ai cevabk ve gereksiz bi part #review task🔼 📅 2026-07-19 
+
+
 Four principles recur across the components and are stated here because the experiment chapters test whether they deliver the reliability they are intended to provide:
 
 1. **Separate orchestration from execution.** The LLM decides; pinned containers and versioned pipelines execute. Non-determinism is confined to the planning layer, where it can be measured, and kept out of the numerical layer, where it would be fatal.
