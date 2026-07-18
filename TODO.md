@@ -23,7 +23,8 @@ claims:
 - [ ] Add timestamps to the Step X lines printed on the command
   *"Step 16: Duration 60.99 seconds| Input tokens: 296,192 | Output tokens: 29,761"  | **Timestamp** *
 - [ ] Maybe: In the skill file create a section or write another reference md to give context on parameter choosing
-- [ ] Start experiment 2 task⏫ 📅 2026-07-30 
+- [ ] Start experiment 2 task⏫ 📅 2026-07-30
+- [ ] Don't forget to add the multiomics aspect to the future work section task⏫ #Todo 
 
 ### epykit
 
