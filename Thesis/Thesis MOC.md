@@ -9,7 +9,7 @@ tags:
 This workstream covers the thesis, Mimosa validation, Toolomics methylation tooling, and run-analysis notes.
 
 > [!UPDATING IMPORTANT]
-> For places that needs updating check the "update" tags
+> For places that needs updating check the "update" tag or "review" tags i cant remember where i put each
 
 ## Thesis Draft
 
