@@ -15,7 +15,7 @@ The data for this experiment are drawn from Farhangdoost et al. (2025), deposite
 |Knockout (KO)|Het-_AKAP11_-KO|3 clones (Clone 16, 20, 21)|
 |Wild-type (WT)|Unedited iPSC-derived neurons|3 replicates (SBP009 ×3)|
 
-The WGBS libraries were sequenced at high depth, aligned with Bismark, and yielded Bismark coverage files deposited in GEO. These six `.cov.gz` files — approximately 24 million CpGs each — are the common starting material for this experiment.
+The WGBS libraries were sequenced at high depth, aligned with Bismark, and yielded Bismark coverage files deposited in GEO. These six `.cov.gz` files #review the dataset has 12 column bed files that we transfered to 6 column cov files with this method blabla ayrıca neden spesifik olarak bu dataseti seçtiğini açıkla— approximately 24 million CpGs each — are the common starting material for this experiment.
 
 The published analysis used the DSS Bioconductor package with a multi-factor beta-binomial model, smoothing enabled, `p.threshold = 1e-5` (raw per-CpG _p_-value), and no effect-size minimum (`delta = 0`), with adjacent significant CpGs merged at ≤100 bp. The paper reported **813 DMRs** (638 hypermethylated, 175 hypomethylated), **705 associated genes** (annotated via Homer and associated within ±100 kb from TSS to DMR midpoint for DMR–DEG correlations), and highlighted convergent DMR–H3K27ac–DEG evidence at gold-standard loci including _IRX2_, _CLEC19A_, and _KANK1_. #review
 
