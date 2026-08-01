@@ -38,7 +38,7 @@ The replication is conducted as three independent analyses of the identical six 
 **Arm 3 — Mimosa pipeline.** Mimosa was given a natural-language goal and a workspace with the coverage files. The pipeline it synthesised is a five-script modular design:
 
 - `01_load_and_qc.R` — load, coverage filter (≥10×), QC plots (PCA, heatmap, dendrogram),
-- `02_differential_methylation.R` — `DMLtest()` (simple two-group), chromosome-by-chromosome to avoid out-of-memory failures, with `p.threshold = 0.05`, `delta = 0.25`, `dis.merge = 1000`,
+- `02_differential_methylation.R` — `DMLtest()` (simple two-group), chromosome-by-chromosome to avoid out-of-memory failures #review are we sure this is included in the best performing, with `p.threshold = 0.05`, `delta = 0.25`, `dis.merge = 1000`,
 - `03_annotate.R` — genomation-based annotation (promoter/exon/intron/intergenic + CpG island overlap),
 - `04_enrichment.R` — GO Biological Process + KEGG enrichment via clusterProfiler,
 - `validate_pipeline.R` — automated sanity checks (sample counts, p-value range, output file existence).
