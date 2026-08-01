@@ -27,7 +27,7 @@ The replication is conducted as three independent analyses of the identical six 
 
 **Arm 1 — Published results (paper).** The expected reference: the 813 DMRs, 705 genes, and enriched pathways reported by Farhangdoost et al. (2025). These are taken as the target of replication, not as ground truth — the paper's own analysis is one defensible choice of parameters among several.
 
-**Arm 2 — Expert re-analysis (baseline).** A 531-line monolithic R script written by a human analyst with the explicit goal of replicating the published analysis faithfully. It uses:
+**Arm 2 — Expert re-analysis (baseline).** An R script written by a human analyst with the explicit goal of replicating the published analysis faithfully. It uses:
 
 - `DMLfit.multiFactor()` + `DMLtest.multiFactor()` (DSS's multi-factor interface),
 - the paper's exact parameters: `smoothing = TRUE`, `p.threshold = 1e-5`, `delta = 0`, `dis.merge = 100`, `minlen = 50`, `minCG = 3`, `pct.sig = 0.5`,
