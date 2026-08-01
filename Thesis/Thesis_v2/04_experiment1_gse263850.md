@@ -8,7 +8,7 @@ The chapter reports headline concordance metrics, traces each source of divergen
 
 ## 4.1 Dataset and biological context
 
-The data for this experiment are drawn from <mark style="background: #FF5582A6;">Farhangdoost et al. (2025),</mark> #update  deposited in the Gene Expression Omnibus as GSE263850. The study investigated genome-wide DNA methylation changes in human induced pluripotent stem cell (iPSC)-derived cortical neurons carrying a heterozygous CRISPR-mediated knockout of _AKAP11_, a gene whose loss-of-function variants are among the strongest known risk factors for both bipolar disorder and schizophrenia. The experimental design is a simple two-group comparison:
+The data for this experiment are drawn from Farhangdoost et al. (2025), deposited in the Gene Expression Omnibus as GSE263850. #review The study investigated genome-wide DNA methylation changes in human induced pluripotent stem cell (iPSC)-derived cortical neurons carrying a heterozygous CRISPR-mediated knockout of _AKAP11_, a gene whose loss-of-function variants are among the strongest known risk factors for both bipolar disorder and schizophrenia. The experimental design is a simple two-group comparison:
 
 |Group|Genotype|Samples|
 |---|---|---|
@@ -17,7 +17,7 @@ The data for this experiment are drawn from <mark style="background: #FF5582A6;"
 
 The WGBS libraries were sequenced at high depth, aligned with Bismark, and yielded Bismark coverage files deposited in GEO. These six `.cov.gz` files — approximately 24 million CpGs each — are the common starting material for this experiment.
 
-The published analysis used the DSS Bioconductor package with a multi-factor beta-binomial model, smoothing enabled, `p.threshold = 1e-5` (raw per-CpG _p_-value), and no effect-size minimum (`delta = 0`), with adjacent significant CpGs merged at ≤100 bp. The paper reported **813 DMRs** (638 hypermethylated, 175 hypomethylated), **705 associated genes** (±100 kb from TSS via ChIPseeker), and highlighted convergent DMR–H3K27ac–DEG evidence at gold-standard loci including _IRX2_, _CLEC19A_, and _KANK1_.
+The published analysis used the DSS Bioconductor package with a multi-factor beta-binomial model, smoothing enabled, `p.threshold = 1e-5` (raw per-CpG _p_-value), and no effect-size minimum (`delta = 0`), with adjacent significant CpGs merged at ≤100 bp. The paper reported **813 DMRs** (638 hypermethylated, 175 hypomethylated), **705 associated genes** (annotated via Homer and associated within ±100 kb from TSS to DMR midpoint for DMR–DEG correlations), and highlighted convergent DMR–H3K27ac–DEG evidence at gold-standard loci including _IRX2_, _CLEC19A_, and _KANK1_. #review
 
 ---
 
@@ -102,7 +102,9 @@ Among the 791 overlapping DMR pairs between the baseline and Mimosa's output, th
 |Hyper|Hyper|0|
 |Hypo|Hypo|0|
 
-This is not biological discordance but a labelling convention difference. The baseline's `DMLfit.multiFactor()` computes coefficients as _treatment − control_ (KO − WT), so a positive `areaStat` indicates higher methylation in the KO — hypermethylation. Mimosa's `DMLtest()` was called as `DMLtest(group1 = ctrl, group2 = treat)`, so its `diff.Methy` represents _control − treatment_ (WT − KO) — flipping the sign. The 100% inversion confirms that the two pipelines agree on the biology for every shared region; the labels are simply opposite.<mark style="background: #FF5582A6;"> sadece label farklıysa hyper hypo farkı neden inverted değil de mimosada %40-60 gibi bir oran?</mark> #update 
+This is not biological discordance but a labelling convention difference. The baseline's `DMLfit.multiFactor()` computes coefficients as _treatment − control_ (KO − WT), so a positive `areaStat` indicates higher methylation in the KO — hypermethylation. Mimosa's `DMLtest()` was called as `DMLtest(group1 = ctrl, group2 = treat)`, so its `diff.Methy` represents _control − treatment_ (WT − KO) — flipping the sign. The 100% inversion confirms that the two pipelines agree on the biology for every shared region; the labels are simply opposite.
+
+A natural question is why Mimosa's overall hyper/hypo ratio (45%/55%) does not mirror the paper's strong hypermethylation skew (78%/22%) if the labels are merely inverted. The answer lies in the composition of the call set. Among the 762 Mimosa DMRs that overlap the baseline, the directional split is 23.9% positive `diff.Methy` / 76.1% negative — which, after accounting for the sign inversion, closely mirrors the baseline's 74.4% Hyper / 25.6% Hypo ratio. The remaining ~4,050 Mimosa-only DMRs — additional low-confidence calls admitted by the permissive threshold — show a near-even split (49.4% / 50.6%), diluting the directional signal in the aggregate statistics. The inversion is thus fully present in the shared, high-confidence regions; the near-even overall ratio is an artefact of the inflated call set. #review
 
 ### 4.3.4 Overlap and concordance
 
@@ -136,7 +138,6 @@ Mimosa's **strongest calls** — those with the largest effect sizes, most CpGs,
 ## 4.4 Gene recovery and biological concordance
 
 ### 4.4.1 Gene-level recovery
-- [ ] burayı paper a ve onun results una bakarak doğrula #update task🔼 📅 2026-07-19 
 
 Gene-level concordance is assessed for the paper's gold-standard loci — genes with convergent DMR + H3K27ac + DEG evidence — and for the top hypermethylated hits.
 
@@ -146,21 +147,40 @@ Gene-level concordance is assessed for the paper's gold-standard loci — genes 
 |---|---|---|---|
 |**IRX2**|Gold standard (DMR + H3K27ac + DEG)|✅ Found (Hyper; 3'UTR/Promoter/Intron)|✅ Found (via enrichment re-overlap)|
 |**CLEC19A**|Gold standard|❌ Not found|❌ Not found|
-|**KANK1**|Gold standard|❌ Not found|❌ Not found|
+|**KANK1**|Gold standard|❌ Not found|✅ Found (via enrichment; 37 GO terms)|
 |OTX1|Top hypermethylated|✅ Found (Hyper; Exon/Intergenic)|✅ Found (via enrichment)|
 |NR2E1|Top hypermethylated|✅ Found (Hyper; 5'UTR)|✅ Found (via enrichment)|
 |PAX7|Top hypermethylated|✅ Found (Hyper; Intergenic)|Unknown (gene_name empty)|
-|ENPP2|Top hypermethylated|✅ Found (Hyper; Promoter)|Unknown (gene_name empty)|
+|ENPP2|Top hypermethylated|✅ Found (Hyper; Promoter)|✅ Found (via enrichment)|
 |CCDC177|Top hypomethylated|✅ Found (Hyper — contradicts paper)|✅ Found (via enrichment)|
 |DMRTA2|ORA-enriched|❌ Missing from baseline|✅ Found (via enrichment)|
 
-Two patterns emerge. First, neither the baseline nor Mimosa recovers _CLEC19A_ or _KANK1_ — two of the paper's three gold-standard genes. This likely reflects a real methodological difference: the paper's gene-association strategy (±100 kb from TSS) links distant DMRs to genes that a direct-overlap annotation would not capture, and these two genes may fall in that gap. That neither arm finds them suggests the ceiling for gene recovery under direct-overlap annotation is below 100%, which sets an honest upper bound for the Mimosa comparison. #update <mark style="background: #FF5582A6;">Paper HOMER kullanıyor o yüzden de farklı olabilir ama double check</mark>
+#review
 
-Second, Mimosa's enrichment step (`04_enrichment.R`) independently re-computes DMR–gene overlaps and _does_ recover key genes like _IRX2_, _NR2E1_, _CCDC177_, and _DMRTA2_ — but because the `gene_name` column in the annotated DMR output is empty for all 4,812 rows (a confirmed annotation bug — see §4.7), these genes cannot be traced back to specific DMR coordinates without re-running the annotation step. This reduces the utility of Mimosa's output for gene-level biological interpretation. #update <mark style="background: #FF5582A6;">Bu nerden çıkıyor hiçbir fikrim yok double check. en kötü claude konuşmalarından bulmaya çalış bu nerden çıktı</mark>
+Two patterns emerge. First, neither the baseline nor Mimosa's annotation step recovers _CLEC19A_ — one of the paper's three gold-standard genes — and the baseline also misses _KANK1_, though Mimosa's enrichment step does recover _KANK1_ in 37 GO terms. This partly reflects a real methodological difference in annotation strategy: the paper used HOMER `annotatePeaks`, which assigns each DMR to its nearest TSS regardless of whether the DMR overlaps the gene body, while the baseline used ChIPseeker (a promoter/genic region hierarchy with nearest-gene fallback) and Mimosa used genomation (direct genomic overlap). For the convergent DMR + H3K27ac + DEG evidence at _IRX2_, _CLEC19A_, and _KANK1_, the paper's multi-omics integration (Fig. 5C) links enhancers to genes by proximity to nearest TSS — so these genes need not have a DMR that overlaps their gene body, only a DMR at a nearby regulatory region. That _CLEC19A_ is not found by any arm suggests the ceiling for gene recovery under R-based annotation strategies is below 100%, which sets an honest upper bound for the Mimosa comparison. #review
+
+Second, Mimosa's enrichment step (`04_enrichment.R`) independently re-computes DMR–gene overlaps — it reads the raw DMR coordinates (`DMRs_tiles.txt`), performs its own `findOverlaps()` against a RefSeq gene BED file, converts RefSeq IDs to Entrez via `org.Hs.eg.db`, and feeds the result into `enrichGO()` and `enrichKEGG()`. This independent pathway _does_ recover key genes including _IRX2_, _NR2E1_, _KANK1_, _CCDC177_, and _DMRTA2_ — but because the `gene_name` column in the annotated DMR output is empty for all 4,812 rows (a confirmed annotation bug in `03_annotate.R` — see §4.7), these gene recoveries cannot be traced back to specific DMR coordinates without re-running the annotation step. This reduces the utility of Mimosa's output for gene-level biological interpretation. #review
 
 ### 4.4.2 Enrichment concordance — biological pathways
-- [ ] bu section not complete ya. paper'daki pathway ve go analizini objektif olarak ekle buraya task⏫ 📅 2026-07-25 #update 
-Despite the different enrichment frameworks — Reactome (baseline) versus GO + KEGG (Mimosa) — and the different gene sets (305 symbols from ±100 kb TSS versus 2,444 Entrez IDs from direct overlap), both analyses converge on the same broad biological themes.
+
+The three arms used different enrichment frameworks and gene sets, which makes direct comparison informative.
+
+**Paper's ORA — Reactome (all 705 DMR-associated genes via ShinyGO v0.77, FDR < 0.05):** #review
+
+1. Class A/1 Rhodopsin-like receptors
+2. Peptide ligand-binding receptors
+3. GPCR ligand binding
+4. GPCR downstream signalling
+5. Signalling by GPCR
+6. G alpha (i) signalling events
+
+**Paper's ORA — GO Molecular Function (59 DMR-associated genes with differential expression, ±100 kb, ShinyGO):** #review
+
+1. Sequence-specific DNA binding (GO:0043565)
+2. DNA-binding transcription factor activity, RNA Pol II-specific (GO:0000981)
+3. Transcription factor binding (GO:0008134)
+4. DNA-binding transcription activator activity, RNA Pol II-specific (GO:0001228)
+5. RNA polymerase II cis-regulatory region sequence-specific DNA binding
 
 **Mimosa's top GO Biological Process terms:**
 
@@ -175,15 +195,15 @@ Despite the different enrichment frameworks — Reactome (baseline) versus GO + 
 2. Calcium signalling pathway (_p_~adj~ = 1.89 × 10^-5^)
 3. Axon guidance (_p_~adj~ = 6.80 × 10^-5^)
 
-Both pipelines highlight neural and developmental pathways, which is biologically consistent with the study's context — _AKAP11_ knockout in iPSC-derived cortical neurons, a model for bipolar disorder and schizophrenia. The enrichment concordance is arguably the most robust form of agreement between the arms, because pathway-level results are buffered against individual gene-level differences by the aggregation inherent in enrichment analysis.
+The paper's Reactome ORA of all DMR-associated genes highlighted GPCR-related pathways, while its GO MF analysis of the smaller DMR–DEG overlap set (59 genes) highlighted DNA-binding transcription factor activity. Mimosa's GO BP enrichment emphasised neural development and patterning, and its KEGG results included neuroactive ligand–receptor interaction — thematically related to the paper's GPCR findings, though framed differently due to the different ontology databases. All three arms converge on neural and developmental biology, which is consistent with the study's context — _AKAP11_ knockout in iPSC-derived cortical neurons, a model for bipolar disorder and schizophrenia. The enrichment concordance is arguably the most robust form of agreement between the arms, because pathway-level results are buffered against individual gene-level differences by the aggregation inherent in enrichment analysis. #review
 
-Two caveats apply. First, Mimosa's enrichment used the default gene universe (all annotated genes) rather than an explicit universe of genes tested, which inflates enrichment significance (a known over-representation analysis pitfall). Second, Mimosa's gene set is derived from 19,525 overlapping RefSeq transcripts rather than the 705 genes in the paper, so the denominator is very different; the fact that the top terms still converge on neural/developmental biology is meaningful precisely because it survives this inflation.
+Three caveats apply. First, the paper performed two separate enrichment analyses — one on all DMR-associated genes (Reactome; GPCR-related) and one on the 59-gene DMR–DEG overlap (GO MF; transcription factor activity) — while Mimosa lumped all DMR-overlapping genes into a single enrichment, making the two not directly comparable. Second, the paper used an explicit background universe of 23,590 genes derived from their own RNA-seq data. Because this RNA-seq dataset was not available to us, neither the baseline nor Mimosa could use this exact background; Mimosa instead used the default gene universe (all annotated genes), which inflates enrichment significance (a known ORA pitfall) #review <mark style="background: #FF5582A6;">add reference</mark> and contributes to the divergence from the paper's specific pathway findings. Third, Mimosa's gene set is derived from 1,587 Entrez IDs (converted from RefSeq overlaps) rather than the 705 genes in the paper, so the input size is very different; the fact that the top terms still converge on neural/developmental biology is meaningful precisely because it survives this inflation. #review
 
 ---
 
 ## 4.5 Genomic context and chromosome distribution
-#update <mark style="background: #FF5582A6;">Homer şeysi yine</mark>
-The distribution of DMRs across genomic compartments is broadly similar between the arms.
+
+The distribution of DMRs across genomic compartments is broadly similar between the arms, though exact percentages are not directly comparable because the paper used Homer for annotation (which assigns each DMR to its nearest TSS feature), the baseline used ChIPseeker (which uses a promoter/genic region hierarchy), and Mimosa used genomation (direct overlap with gene features). #review
 
 **Table 4.7.** Genomic context distribution of DMRs.
 
@@ -245,7 +265,7 @@ Table 4.8 brings together the comparison across all evaluated dimensions.
 |---|---|---|---|
 |**DMR count fidelity**|921 vs. 813 (1.1×)|4,812 vs. 813 (5.9×)|5.2× more|
 |**Direction**|Correct convention|Inverted (100%)|Inverted (100%)|
-|**Gene recovery**|4/9 key genes found|4/9 via enrichment|86% positional overlap|
+|**Gene recovery**|4/9 key genes found|5/9 via enrichment|86% positional overlap| #review
 |**Pathway themes**|Neural/developmental ✅|Neural/developmental ✅|Convergent|
 |**Genomic context**|Proportionally similar|Proportionally similar|Higher intergenic|
 |**Silent defects**|None identified|3 (p-threshold, direction, gene_name)|—|
