@@ -32,7 +32,7 @@ The replication is conducted as three independent analyses of the identical six 
 - `DMLfit.multiFactor()` + `DMLtest.multiFactor()` (DSS's multi-factor interface),
 - the paper's exact parameters: `smoothing = TRUE`, `p.threshold = 1e-5`, `delta = 0`, `dis.merge = 100`, `minlen = 50`, `minCG = 3`, `pct.sig = 0.5`,
 - ≥5× per-sample coverage filter (matching the paper),
-- ChIPseeker annotation with a ±100 kb TSS window,
+- ChIPseeker annotation with a ±100 kb TSS window, #review not the same as the paper but we want to simulate the most paperlike script that doesn't use extra tools because thats what mimosa will do
 - ReactomePA pathway enrichment with an explicit gene universe.
 
 **Arm 3 — Mimosa pipeline.** Mimosa was given a natural-language goal and a workspace with the coverage files. The pipeline it synthesised is a five-script modular design:
