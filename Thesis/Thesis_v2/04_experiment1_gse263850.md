@@ -199,6 +199,23 @@ The paper's Reactome ORA of all DMR-associated genes highlighted GPCR-related pa
 
 Three caveats apply. First, the paper performed two separate enrichment analyses — one on all DMR-associated genes (Reactome; GPCR-related) and one on the 59-gene DMR–DEG overlap (GO MF; transcription factor activity) — while Mimosa lumped all DMR-overlapping genes into a single enrichment, making the two not directly comparable. Second, the paper used an explicit background universe of 23,590 genes derived from their own RNA-seq data. Because this RNA-seq dataset was not available to us, neither the baseline nor Mimosa could use this exact background; Mimosa instead used the default gene universe (all annotated genes), which inflates enrichment significance (a known ORA pitfall) #review <mark style="background: #FF5582A6;">add reference</mark> and contributes to the divergence from the paper's specific pathway findings. Third, Mimosa's gene set is derived from 1,587 Entrez IDs (converted from RefSeq overlaps) rather than the 705 genes in the paper, so the input size is very different; the fact that the top terms still converge on neural/developmental biology is meaningful precisely because it survives this inflation. #review
 
+**Post-hoc manual standardisation** #review
+To determine whether the divergence in pathway themes (GPCR/TF activity vs. neural development) was driven by the analytical framework (ShinyGO vs. clusterProfiler) or the input gene set, a post-hoc manual standardisation was performed. The 1,040 unique gene symbols identified by Mimosa's enrichment step were manually run through ShinyGO v0.77 against the GO Molecular Function database — replicating the tool and database used by the paper. 
+
+**Manual ORA — GO Molecular Function (all 1,040 Mimosa DMR genes, ShinyGO v0.77):**
+1. heparan sulfate 6-sulfotransferase activity (GO:0017095)
+2. ryanodine-sensitive calcium-release channel activity (GO:0005219)
+3. Roundabout binding (GO:0048495)
+4. neurotrophin receptor activity (GO:0005030)
+5. voltage-gated calcium channel activity (GO:0086007)
+
+The top results did not recover the paper's transcription factor binding signatures. Instead, the top terms align closely with Mimosa's autonomous findings, featuring calcium channel activity, neurotrophin receptor activity, and Roundabout binding (an axon guidance receptor). #review <mark style="background: #FF5582A6;">maybe references here too?</mark>
+
+Standardising the enrichment method and database did not shift the results toward the paper's transcription-factor-activity terms; the top hits remained centred on ion channel and receptor activity (ryanodine-sensitive calcium-release channel, voltage-gated calcium channel, neurotrophin receptor) rather than DNA-binding or transcription factor function. This suggests the divergence observed in Section 4.4.2 is not primarily attributable to the choice of enrichment tool or ontology database (ShinyGO/GO MF vs. clusterProfiler/GO BP/KEGG), since holding these constant did not reproduce the paper's findings. Instead, the discordance more likely originates upstream, in the composition of the DMR-associated gene set itself — consistent with the differences in background universe and gene set size noted above. #review <mark style="background: #FF5582A6;">bununla altındaki overlap ediyo sanki bunları birleştir veya direkt sil birini </mark>
+
+This demonstrates a critical methodological point: the paper's specific GO MF findings (transcription factor binding) were entirely dependent on their decision to filter the DMR genes down to only those that were also differentially expressed (the 59-gene DMR–DEG overlap). When an autonomous pipeline like Mimosa faithfully annotates all significant DMRs and enriches the full set, the resulting pathway profile looks completely different — dominated instead by broader neural development and calcium signalling themes, regardless of the ontology database used. #review <mark style="background: #FF5582A6;">too ai written, especially the start. make it objective, this is a scientific paper</mark>
+
+
 ---
 
 ## 4.5 Genomic context and chromosome distribution
