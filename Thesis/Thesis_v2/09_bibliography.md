@@ -77,6 +77,12 @@
   year    = {2020},
   note    = {STATUS: confident — verify vol/pages/DOI}
 }
+@misc{sherman,
+  author       = {Krueger, Felix},
+  title        = {Sherman: A simple Bisulfite FastQ Read Simulator},
+  howpublished = {\url{https://github.com/FelixKrueger/Sherman}},
+  note         = {STATUS: VERIFY — software repository citation}
+}
 ```
 
 ## Differential methylation (§2.3)
