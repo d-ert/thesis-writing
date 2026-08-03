@@ -143,17 +143,17 @@ Gene-level concordance is assessed for the paper's gold-standard loci — genes 
 
 **Table 4.6.** Recovery of key genes across analysis arms.
 
-|Gene|Paper status|Baseline|Mimosa|
-|---|---|---|---|
-|**IRX2**|Gold standard (DMR + H3K27ac + DEG)|✅ Found (Hyper; 3'UTR/Promoter/Intron)|✅ Found (via enrichment re-overlap)|
-|**CLEC19A**|Gold standard|❌ Not found|❌ Not found|
-|**KANK1**|Gold standard|❌ Not found|✅ Found (via enrichment; 37 GO terms)|
-|OTX1|Top hypermethylated|✅ Found (Hyper; Exon/Intergenic)|✅ Found (via enrichment)|
-|NR2E1|Top hypermethylated|✅ Found (Hyper; 5'UTR)|✅ Found (via enrichment)|
-|PAX7|Top hypermethylated|✅ Found (Hyper; Intergenic)|Unknown (gene_name empty)|
-|ENPP2|Top hypermethylated|✅ Found (Hyper; Promoter)|✅ Found (via enrichment)|
-|CCDC177|Top hypomethylated|✅ Found (Hyper — contradicts paper)|✅ Found (via enrichment)|
-|DMRTA2|ORA-enriched|❌ Missing from baseline|✅ Found (via enrichment)|
+| Gene        | Paper status                        | Baseline                               | Mimosa                    |
+| ----------- | ----------------------------------- | -------------------------------------- | ------------------------- |
+| **IRX2**    | Gold standard (DMR + H3K27ac + DEG) | ✅ Found (Hyper; 3'UTR/Promoter/Intron) | ✅ Found (via enrichment)  |
+| **CLEC19A** | Gold standard                       | ❌ Not found                            | ❌ Not found               |
+| **KANK1**   | Gold standard                       | ❌ Not found                            | ✅ Found (via enrichment)  |
+| OTX1        | Top hypermethylated                 | ✅ Found (Hyper; Exon/Intergenic)       | ✅ Found (via enrichment)  |
+| NR2E1       | Top hypermethylated                 | ✅ Found (Hyper; 5'UTR)                 | ✅ Found (via enrichment)  |
+| PAX7        | Top hypermethylated                 | ✅ Found (Hyper; Intergenic)            | Unknown (gene_name empty) |
+| ENPP2       | Top hypermethylated                 | ✅ Found (Hyper; Promoter)              | ✅ Found (via enrichment)  |
+| CCDC177     | Top hypomethylated                  | ✅ Found (Hyper — contradicts paper)    | ✅ Found (via enrichment)  |
+| DMRTA2      | ORA-enriched                        | ❌ Missing from baseline                | ✅ Found (via enrichment)  |
 
 #review
 
