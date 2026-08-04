@@ -34,7 +34,7 @@ related: []
 ## 🧠 Synthesis & Thoughts
 *(This is where you synthesize how this relates to your work. Does it support your methodology? Does it contradict a previous paper?)*
 
-- **Relevance**:: 
+- **Relevance**:: ref=1
 - **Methodology**:: 
 - **Key Findings**::  
 
