@@ -256,7 +256,7 @@ A single `execution_mode` argument selects between two backends that the server 
 
 ### 3.2.3 Scope exercised in this work
 
-Both backends are implemented, but the compute resources available for this thesis constrain which is exercised. The project workstation has **no Seqera or AWS access**, so the cloud backend is described as a designed capability rather than an exercised path. The local backend is functional, but aligning full real human WGBS from FASTQ with nf-core/methylseq was estimated at approximately **six days per sample** on this hardware, which is infeasible for the multi-sample replications of Chapter 4. Consequently:
+Both backends are implemented, but the compute resources available for this thesis constrain which is exercised. The project workstation has **no Seqera or AWS access**, so the cloud backend is described as a designed capability (confirmed with the demo dataset included with nf-core by successfully performing it on Seqera and pulling the results) rather than an exercised path. The local backend is functional, but aligning full real human WGBS from FASTQ with nf-core/methylseq was estimated at approximately **six days per sample** on this hardware, which is infeasible for the multi-sample replications of Chapter 4. Consequently:
 
 - the **real-data replications (Chapter 4 and Chapter 5) start from the published `.cov` coverage files** and do not exercise Server A's alignment stage;
 - Server A's full FASTQ → `.cov` path is demonstrated only at **small synthetic scale** (Chapter 6), where a reduced reference and short simulated read sets complete quickly, with an existing small-genome Bismark test run as additional evidence that the local Singularity path is correct end-to-end.
