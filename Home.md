@@ -21,10 +21,14 @@ const today = dv.date("today");
 const daysLeft = Math.round(deadline.diff(today, "days").days);
 
 const chapterPaths = [
-  "Thesis/Thesis_v1/Introduction.md",
-  "Thesis/Thesis_v1/Background.md",
-  "Thesis/Thesis_v1/System Design & Methods.md",
-  "Thesis/Thesis_v1/04_validation1_replication.md",
+  "Thesis/Thesis_v2/01_introduction.md",
+  "Thesis/Thesis_v2/02_background.md",
+  "Thesis/Thesis_v2/03_system_design_and_methods.md",
+  "Thesis/Thesis_v2/04_experiment1_gse263850.md",
+  "Thesis/Thesis_v2/05_experiment2_gse214232.md",
+  "Thesis/Thesis_v2/06_experiment3_simulated_fastq.md",
+  "Thesis/Thesis_v2/07_discussion.md",
+  "Thesis/Thesis_v2/08_conclusions.md",
 ];
 let totalWords = 0;
 for (const p of chapterPaths) {
@@ -60,7 +64,7 @@ dv.container.innerHTML = `
 <a class="nav-card internal-link" href="Epykit/Epykit MOC.md" data-href="Epykit/Epykit MOC.md"><span class="nav-icon">&#129516;</span><span class="nav-label">Epykit MOC</span></a>
 <a class="nav-card internal-link" href="References/MOC.md" data-href="References/MOC.md"><span class="nav-icon">&#128218;</span><span class="nav-label">References</span></a>
 <a class="nav-card internal-link" href="TODO.md" data-href="TODO.md"><span class="nav-icon">&#9989;</span><span class="nav-label">Master to-do</span></a>
-<a class="nav-card internal-link" href="Thesis/Thesis_v1/OUTLINE.md" data-href="Thesis/Thesis_v1/OUTLINE.md"><span class="nav-icon">&#128193;</span><span class="nav-label">Thesis outline</span></a>
+<a class="nav-card internal-link" href="Thesis/Thesis_v2/OUTLINE.md" data-href="Thesis/Thesis_v2/OUTLINE.md"><span class="nav-icon">&#128193;</span><span class="nav-label">Thesis outline</span></a>
 <a class="nav-card internal-link" href="Thesis/Whole bunch of skills that Mimosa can use.md" data-href="Thesis/Whole bunch of skills that Mimosa can use.md"><span class="nav-icon">&#129504;</span><span class="nav-label">Skills reference</span></a>
 </div>
 </div>
@@ -243,10 +247,14 @@ dv.container.innerHTML = `
 // ── Thesis chapter progress ─────────────────────────────────────
 // EDIT ME: adjust target word counts to your own expected chapter length
 const chapters = [
-  { title: "Introduction", path: "Thesis/Thesis_v1/Introduction.md", target: 6000 },
-  { title: "Background", path: "Thesis/Thesis_v1/Background.md", target: 9000 },
-  { title: "System Design & Methods", path: "Thesis/Thesis_v1/System Design & Methods.md", target: 14000 },
-  { title: "Validation & Replication", path: "Thesis/Thesis_v1/04_validation1_replication.md", target: 9000 },
+  { title: "Introduction", path: "Thesis/Thesis_v2/01_introduction.md", target: 2000 },
+  { title: "Background", path: "Thesis/Thesis_v2/02_background.md", target: 3000 },
+  { title: "System Design & Methods", path: "Thesis/Thesis_v2/03_system_design_and_methods.md", target: 5000 },
+  { title: "Experiment 1: GSE263850", path: "Thesis/Thesis_v2/04_experiment1_gse263850.md", target: 4000 },
+  { title: "Experiment 2: GSE214232", path: "Thesis/Thesis_v2/05_experiment2_gse214232.md", target: 4000 },
+  { title: "Experiment 3: Sim FASTQ", path: "Thesis/Thesis_v2/06_experiment3_simulated_fastq.md", target: 4000 },
+  { title: "Discussion", path: "Thesis/Thesis_v2/07_discussion.md", target: 2000 },
+  { title: "Conclusions", path: "Thesis/Thesis_v2/08_conclusions.md", target: 1000 },
 ];
 
 let rows = "";

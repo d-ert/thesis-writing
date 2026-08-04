@@ -8,16 +8,16 @@ The chapter reports headline concordance metrics, traces each source of divergen
 
 ## 4.1 Dataset and biological context
 
-The data for this experiment are drawn from Farhangdoost et al. (2025), deposited in the Gene Expression Omnibus as GSE263850. #review The study investigated genome-wide DNA methylation changes in human induced pluripotent stem cell (iPSC)-derived cortical neurons carrying a heterozygous CRISPR-mediated knockout of _AKAP11_, a gene whose loss-of-function variants are among the strongest known risk factors for both bipolar disorder and schizophrenia. The experimental design is a simple two-group comparison:
+The data for this experiment are drawn from Farhangdoost et al. (2025), deposited in the Gene Expression Omnibus as GSE263850. The study investigated genome-wide DNA methylation changes in human induced pluripotent stem cell (iPSC)-derived cortical neurons carrying a heterozygous CRISPR-mediated knockout of _AKAP11_, a gene whose loss-of-function variants are among the strongest known risk factors for both bipolar disorder and schizophrenia. The experimental design is a simple two-group comparison:
 
 |Group|Genotype|Samples|
 |---|---|---|
 |Knockout (KO)|Het-_AKAP11_-KO|3 clones (Clone 16, 20, 21)|
 |Wild-type (WT)|Unedited iPSC-derived neurons|3 replicates (SBP009 ×3)|
 
-The WGBS libraries were sequenced at high depth, aligned with Bismark, and yielded Bismark coverage files deposited in GEO. These six `.cov.gz` files #review the dataset has 12 column bed files that we transfered to 6 column cov files with this method blabla ayrıca neden spesifik olarak bu dataseti seçtiğini açıkla— approximately 24 million CpGs each — are the common starting material for this experiment.
+The WGBS libraries were sequenced at high depth, aligned with Bismark, and yielded Bismark coverage files deposited in GEO. These six `.cov.gz` files the dataset has 12 column bed files that we transfered to 6 column cov files with this method blabla #review  [[coversion_logic copy]]  <mark style="background: #FF5582A6;">ayrıca neden spesifik olarak bu dataseti seçtiğini açıkla</mark>— approximately 24 million CpGs each — are the common starting material for this experiment. 
 
-The published analysis used the DSS Bioconductor package with a multi-factor beta-binomial model, smoothing enabled, `p.threshold = 1e-5` (raw per-CpG _p_-value), and no effect-size minimum (`delta = 0`), with adjacent significant CpGs merged at ≤100 bp. The paper reported **813 DMRs** (638 hypermethylated, 175 hypomethylated), **705 associated genes** (annotated via Homer and associated within ±100 kb from TSS to DMR midpoint for DMR–DEG correlations), and highlighted convergent DMR–H3K27ac–DEG evidence at gold-standard loci including _IRX2_, _CLEC19A_, and _KANK1_. #review
+The published analysis used the DSS Bioconductor package with a multi-factor beta-binomial model, smoothing enabled, `p.threshold = 1e-5` (raw per-CpG _p_-value), and no effect-size minimum (`delta = 0`), with adjacent significant CpGs merged at ≤100 bp. The paper reported **813 DMRs** (638 hypermethylated, 175 hypomethylated), **705 associated genes** (annotated via Homer and associated within ±100 kb from TSS to DMR midpoint for DMR–DEG correlations), and highlighted convergent DMR–H3K27ac–DEG evidence at gold-standard loci including _IRX2_, _CLEC19A_, and _KANK1_.
 
 ---
 
@@ -32,7 +32,7 @@ The replication is conducted as three independent analyses of the identical six 
 - `DMLfit.multiFactor()` + `DMLtest.multiFactor()` (DSS's multi-factor interface),
 - the paper's exact parameters: `smoothing = TRUE`, `p.threshold = 1e-5`, `delta = 0`, `dis.merge = 100`, `minlen = 50`, `minCG = 3`, `pct.sig = 0.5`,
 - ≥5× per-sample coverage filter (matching the paper),
-- ChIPseeker annotation with a ±100 kb TSS window, #review not the same as the paper but we want to simulate the most paperlike script that doesn't use extra tools because thats what mimosa will do
+- ChIPseeker annotation with a ±100 kb TSS window, #review <mark style="background: #FF5582A6;">not the same as the paper but we want to simulate the most paperlike script that doesn't use extra tools because thats what mimosa will do</mark>
 - ReactomePA pathway enrichment with an explicit gene universe.
 
 **Arm 3 — Mimosa pipeline.** Mimosa was given a natural-language goal and a workspace with the coverage files. The pipeline it synthesised is a five-script modular design:
