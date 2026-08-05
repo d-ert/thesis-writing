@@ -38,7 +38,7 @@ related: []
 ## 🧠 Synthesis & Thoughts
 *(This is where you synthesize how this relates to your work. Does it support your methodology? Does it contradict a previous paper?)*
 
-- **Relevance**:: 
+- **Relevance**:: Bismark
 - **Methodology**:: 
 - **Key Findings**::  
 

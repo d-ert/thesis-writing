@@ -48,3 +48,4 @@ related: []
 ---
 
 ### Notes
+For deprecated study C

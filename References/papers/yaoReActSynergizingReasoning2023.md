@@ -29,12 +29,12 @@ related: []
 
 
 ## 🎯 TL;DR / Core Claim
-The authors introduce ReAct, a paradigm that allows large language models to seamlessly interleave verbal reasoning (chain-of-thought) with task-specific actions (tool use/environment interaction). For this thesis, ReAct is the foundational execution loop that transforms static LLMs into autonomous scientific agents capable of iterative experimentation, observation, and strategy revision.
+*(Write a 1-2 sentence summary of what this paper actually achieves or claims, in your own words. Why does this matter for your thesis?)*
 
 ## 🧠 Synthesis & Thoughts
-This paper establishes the baseline architecture for modern agentic systems. In the context of Chapter 2.4 (_From Static Pipelines to Agentic Science_), ReAct represents the critical bridge between a traditional, human-specified computational pipeline and an autonomous, goal-directed researcher. By allowing the model to gather real-world feedback (e.g., using a Wikipedia API, or in our case, computational biology tools) before its next reasoning step, ReAct directly mitigates hallucinations and flawed assumptions. However, as noted by more recent frameworks (like Mimosa), a single ReAct loop has limitations over long scientific horizons due to context window saturation, meaning ReAct serves best as the "micro-engine" within a larger, multi-agent macro-architecture.
+*(This is where you synthesize how this relates to your work. Does it support your methodology? Does it contradict a previous paper?)*
 
-- **Relevance**:: Chapter 2.4 From Static Pipelines to Agentic Science
+- **Relevance**:: Chapter 2: this is the ReAct paper for ASR
 - **Methodology**:: 
 - **Key Findings**::  
 
@@ -43,6 +43,3 @@ This paper establishes the baseline architecture for modern agentic systems. In 
 ---
 
 ### Notes
-- This is essentially the "origin story" of the modern AI agent.
-
-- The core takeaway is the synergistic loop: _Reasoning_ helps the model induce and update plans, while _Acting_ allows it to pull in factual, external data to ground that reasoning
