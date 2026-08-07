@@ -74,16 +74,16 @@ Table 4.2 catalogues the parameter differences between the baseline and Mimosa, 
 
 **Table 4.2.** Critical parameter differences between the baseline and Mimosa pipelines.
 
-|Parameter|Baseline (paper values)|Mimosa|Impact|
-|---|---|---|---|
-|Coverage filter|≥5× per sample|≥10× in ≥1 sample|Mimosa retains fewer sites but with different per-sample logic|
-|Statistical model|`DMLfit.multiFactor()`|`DMLtest()` (simple 2-group)|Equivalent for this single-factor design|
-|`delta` (effect-size minimum)|**0**|**0.25**|Mimosa is stricter — requires ≥25% methylation difference|
-|`p.threshold` in `callDMR`|**1e-5** (raw _p_)|**0.05** (FDR, misapplied)|**Mimosa is ~5,000× more permissive**|
-|`dis.merge`|**100 bp**|**1,000 bp**|Mimosa merges regions 10× farther apart|
-|`minlen`|50|50|Identical|
-|`minCG`|3|3|Identical|
-|`pct.sig`|0.5|0.5|Identical|
+| Parameter                     | Baseline (paper values) | Mimosa                       | Impact                                                         |
+| ----------------------------- | ----------------------- | ---------------------------- | -------------------------------------------------------------- |
+| Coverage filter               | ≥5× per sample          | ≥10× in ≥1 sample            | Mimosa retains fewer sites but with different per-sample logic |
+| Statistical model             | `DMLfit.multiFactor()`  | `DMLtest()` (simple 2-group) | Equivalent for this single-factor design                       |
+| `delta` (effect-size minimum) | **0**                   | **0.25**                     | Mimosa is stricter — requires ≥25% methylation difference      |
+| `p.threshold` in `callDMR`    | **1e-5** (raw _p_)      | **0.05** (FDR, misapplied)   | **Mimosa is ~5,000× more permissive**                          |
+| `dis.merge`                   | **100 bp**              | **1,000 bp**                 | Mimosa merges regions 10× farther apart                        |
+| `minlen`                      | 50                      | 50                           | Identical                                                      |
+| `minCG`                       | 3                       | 3                            | Identical                                                      |
+| `pct.sig`                     | 0.5                     | 0.5                          | Identical                                                      |
 
 The single most consequential difference is the `p.threshold` mismatch. DSS's `callDMR()` function expects a raw per-CpG _p_-value threshold; the Mimosa pipeline passes its configured FDR cutoff (0.05) into this slot. This makes the per-CpG inclusion criterion approximately 5,000 times more permissive than the paper's `1e-5`, which is the primary driver of the DMR count inflation. Mimosa's stricter effect-size filter (`delta = 0.25` versus `delta = 0`) partially offsets this by rejecting small-effect CpGs, but clearly does not compensate for the p-value looseness. The `dis.merge = 1000` setting further inflates counts by merging CpGs up to 10× farther apart into single regions.
 
